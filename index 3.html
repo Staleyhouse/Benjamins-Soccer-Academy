@@ -1,0 +1,2098 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Academy">
+<title>Benjamin's First Team Academy · V10</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,600;0,700;1,700;1,800&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* Liverpool-inspired palette: rich red, deep red, cream, gold, and a touch of crest green for successful progress states. */
+  --red:#c8102e; --red-deep:#8f0a1f; --red-soft:#fde7eb;
+  --night:#14171d; --chalk:#f6f1e8; --card:#fffdf9; --line:#ddd5c8; --soft:#5d6068;
+  --gold:#d4a017; --gold-deep:#9a6b00; --teal:#1a7f5a; --teal-deep:#0f5b40; --teal-soft:#ddf2e8;
+  --cream:#fff7ea; --lfc-green:#0f5b40;
+  --display:"Barlow Condensed","Arial Narrow",Impact,sans-serif;
+  --body:"Barlow",system-ui,-apple-system,"Segoe UI",sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{background:var(--chalk);color:var(--night);font-family:var(--body);font-size:17px;line-height:1.4;display:flex;flex-direction:column;
+  -webkit-tap-highlight-color:transparent;overscroll-behavior:none}
+button,input,select{font:inherit;color:inherit}
+button{border:0;background:none;cursor:pointer;touch-action:manipulation;padding:0}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+h1,h2,h3,.dsp{font-family:var(--display);font-style:italic;font-weight:800;text-transform:uppercase;letter-spacing:.3px;margin:0;line-height:1.02;text-wrap:balance}
+.num{font-family:var(--display);font-weight:700;font-variant-numeric:tabular-nums}
+p{margin:0}
+
+/* banner + tabs */
+.top{background:linear-gradient(135deg,var(--red) 0%,var(--red-deep) 100%);color:#fff;display:flex;align-items:center;gap:12px;padding:10px clamp(14px,3vw,28px);flex:none;position:relative;overflow:hidden}
+.top::before{pointer-events:none;content:"";position:absolute;left:-20px;bottom:-52px;width:220px;height:110px;border:3px solid rgba(255,255,255,.12);border-top-left-radius:110px;border-top-right-radius:110px;border-bottom:0;opacity:.7}
+.top::after{pointer-events:none;content:"";position:absolute;right:-40px;top:-60px;width:220px;height:220px;border:26px solid rgba(255,255,255,.08);border-radius:50%}
+.top h1{font-size:30px;flex:1;min-width:0}
+.top h1 small{display:block;font-family:var(--body);font-style:normal;font-weight:500;text-transform:none;font-size:14px;letter-spacing:0;opacity:.85;margin-top:3px}
+.pill{background:rgba(0,0,0,.22);border-radius:99px;padding:6px 14px;font-weight:600;font-size:15px;display:flex;gap:7px;align-items:center;white-space:nowrap;position:relative;z-index:1}
+.pill b{font-family:var(--display);font-size:21px;font-weight:700}
+.lock{width:44px;height:44px;border-radius:12px;background:rgba(0,0,0,.22);display:flex;align-items:center;justify-content:center;position:relative;z-index:1}
+.lock svg{width:22px;height:22px}
+main{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:18px clamp(14px,3vw,28px) 30px}
+.wrap{max-width:1040px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
+.tabs{flex:none;background:var(--lfc-green);display:grid;grid-template-columns:repeat(5,1fr);padding:6px 6px calc(6px + env(safe-area-inset-bottom,0px))}
+.tab{color:#e8f4ef;display:flex;flex-direction:column;align-items:center;gap:2px;padding:7px 2px 5px;border-radius:12px;font-size:13px;font-weight:600}
+.tab svg{width:26px;height:26px}
+.tab.on{background:var(--red);color:#fff}
+
+/* building blocks */
+.card{background:var(--card);border:2px solid var(--line);border-radius:18px;padding:16px 18px}
+.card h2{font-size:24px}
+.card h3{font-size:20px}
+.grid2{display:grid;grid-template-columns:1.25fr 1fr;gap:16px}
+.grid3{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
+.soft{color:var(--soft)} .small{font-size:14.5px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:50px;padding:0 20px;border-radius:14px;font-weight:700;font-size:17px;background:var(--night);color:#fff;text-align:center}
+.btn.red{background:var(--red)} .btn.gold{background:var(--gold);color:#3b2900} .btn.teal{background:var(--teal-deep)}
+.btn.ghost{background:#e8eae4;color:var(--night)} .btn.big{min-height:62px;font-size:20px;border-radius:16px}
+.btn.wide{width:100%} .btn[disabled]{opacity:.4}
+.btn:active{transform:translateY(1px)}
+.chip{display:inline-flex;align-items:center;gap:5px;border-radius:99px;padding:3px 11px;font-size:13.5px;font-weight:600;background:#e8eae4;color:var(--night);white-space:nowrap}
+.chip.pass{background:var(--teal-soft);color:var(--teal-deep)} .chip.next{background:var(--red-soft);color:var(--red-deep)} .chip.gold{background:#fdefc8;color:#6b4a00}
+.row{display:flex;align-items:center;gap:12px}
+.sp{flex:1}
+.bar{height:12px;border-radius:99px;background:#e3e6dd;overflow:hidden}
+.bar i{display:block;height:100%;border-radius:99px;background:var(--red)}
+.bar.gold i{background:var(--gold)} .bar.teal i{background:var(--teal)}
+
+/* home */
+.hero{background:linear-gradient(135deg,var(--night) 0%,#222733 42%,var(--red-deep) 100%);color:#fff;border-radius:22px;padding:20px 22px;display:grid;grid-template-columns:auto 1fr;gap:20px;align-items:center;position:relative;overflow:hidden}
+.hero::before{pointer-events:none;content:"";position:absolute;left:-30px;right:-30px;bottom:-70px;height:120px;border:3px solid rgba(255,255,255,.07);border-radius:50%}
+.hero::after{pointer-events:none;content:"";position:absolute;right:16px;top:14px;width:120px;height:66px;border:3px solid rgba(255,255,255,.12);border-top-left-radius:66px;border-top-right-radius:66px;border-bottom:0;opacity:.9}
+.hero h2{font-size:34px}
+.hero .ring{width:132px;height:132px;position:relative;flex:none}
+.hero .ring svg{width:100%;height:100%}
+.hero .ring div{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1}
+.hero .ring b{font-family:var(--display);font-size:46px;font-weight:700}
+.hero .ring span{font-size:12px;letter-spacing:.8px;text-transform:uppercase;opacity:.8}
+.hero .tests{display:flex;gap:5px;margin:10px 0 12px;flex-wrap:wrap}
+.hero .tests i{width:26px;height:10px;border-radius:99px;background:rgba(255,255,255,.18)}
+.hero .tests i.f{background:var(--teal)}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.kpi{background:var(--card);border:2px solid var(--line);border-radius:16px;padding:12px 14px}
+.kpi b{font-family:var(--display);font-size:34px;font-weight:700;line-height:1;display:block}
+.kpi span{font-size:13.5px;color:var(--soft)}
+.week{display:flex;gap:6px;margin-top:8px}
+.week i{flex:1;height:30px;border-radius:8px;background:#e3e6dd;display:flex;align-items:center;justify-content:center;font-style:normal;font-size:12px;font-weight:700;color:var(--soft)}
+.week i.f{background:var(--teal);color:#fff} .week i.t{box-shadow:inset 0 0 0 2px var(--night)}
+
+/* lists */
+.item{display:flex;align-items:center;gap:12px;background:var(--card);border:2px solid var(--line);border-radius:16px;padding:12px 14px;text-align:left;width:100%}
+.item .ico{width:46px;height:46px;border-radius:12px;background:var(--red-soft);color:var(--red-deep);display:flex;align-items:center;justify-content:center;font-family:var(--display);font-weight:700;font-size:22px;flex:none}
+.item.done .ico{background:var(--teal);color:#fff}
+.item b{display:block;font-size:17.5px;font-weight:700;line-height:1.2}
+.item .meta{font-size:14px;color:var(--soft)}
+.item .go{font-family:var(--display);font-weight:700;font-size:20px;color:var(--red);flex:none}
+.sect{display:flex;align-items:baseline;gap:10px;margin-top:6px}
+.sect h2{font-size:26px}
+.filter{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
+.filter::-webkit-scrollbar{display:none}
+.filter button{flex:none;border-radius:99px;padding:8px 16px;background:#e3e6dd;font-weight:600;font-size:15px}
+.filter button.on{background:var(--night);color:#fff}
+
+/* benchmarks */
+.steps10{display:grid;grid-template-columns:repeat(10,1fr);gap:6px}
+.steps10 button{border-radius:12px;padding:8px 0 6px;background:#e3e6dd;display:flex;flex-direction:column;align-items:center;line-height:1}
+.steps10 b{font-family:var(--display);font-size:24px;font-weight:700}
+.steps10 span{font-size:11px;font-weight:600;color:var(--soft);margin-top:2px}
+.steps10 .done{background:var(--teal);color:#fff} .steps10 .done span{color:#d7f5f2}
+.steps10 .cur{background:var(--red);color:#fff} .steps10 .cur span{color:#ffd9df}
+.steps10 .view{box-shadow:0 0 0 3px var(--night)}
+.steps10 button{position:relative;min-height:108px;justify-content:flex-start;padding-top:6px}
+.bgate{display:flex;flex-direction:column;align-items:center;gap:4px;width:100%}
+.bgate svg{display:block;width:58px;height:52px;overflow:visible}
+.bgate .g-pill{fill:rgba(255,255,255,.18)}
+.bgate .g-post,.bgate .g-arch,.bgate .g-crown{fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.bgate .g-num{font-family:var(--display);font-size:19px;font-weight:700;fill:currentColor}
+.bgate .g-ynwa{font-family:var(--body);font-size:4.7px;font-weight:700;letter-spacing:.5px;fill:currentColor}
+.bgate .g-age{font-size:10px;font-weight:700;color:inherit;opacity:.82;letter-spacing:.2px}
+.bgate .g-name{font-size:9.5px;font-weight:600;color:inherit;opacity:.65;line-height:1.05;max-width:58px;text-wrap:balance}
+.lfc-note{background:linear-gradient(135deg,var(--red-soft) 0%, #fff7ea 100%);border:2px solid #edcbd2;border-radius:18px;padding:14px 16px;position:relative;overflow:hidden}
+.lfc-note::after{content:"";position:absolute;right:-18px;bottom:-20px;width:86px;height:44px;border:3px solid rgba(200,16,46,.18);border-top-left-radius:44px;border-top-right-radius:44px;border-bottom:0}
+.clubline{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.clubchip{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:6px 10px;background:#fff;border:1.5px solid #edd9ad;font-size:13px;font-weight:700;color:var(--night)}
+.trow{display:grid;grid-template-columns:1fr auto auto;gap:12px;align-items:center;background:var(--card);border:2px solid var(--line);border-radius:16px;padding:12px 14px;width:100%;text-align:left}
+.trow .tg{text-align:right;line-height:1.1}
+.trow .tg b{font-family:var(--display);font-size:26px;font-weight:700}
+.trow .tg span{display:block;font-size:12px;color:var(--soft)}
+.lvbar{display:flex;gap:3px;margin-top:6px}
+.lvbar i{width:16px;height:6px;border-radius:9px;background:#e3e6dd}
+.lvbar i.f{background:var(--teal)} .lvbar i.t{background:var(--red)}
+
+/* rewards */
+.rw{display:flex;gap:14px;align-items:center;background:var(--card);border:2px solid var(--line);border-radius:18px;padding:14px 16px}
+.rw .em{width:62px;height:62px;border-radius:16px;background:#eef0ea;display:flex;align-items:center;justify-content:center;font-size:34px;flex:none}
+.rw.locked .em{filter:grayscale(1);opacity:.55}
+.rw.ready{border-color:var(--gold-deep);background:#fff8e3;box-shadow:0 4px 0 var(--gold)}
+.rw.given{opacity:.7}
+.rw b{font-size:19px;display:block;line-height:1.2}
+
+/* player card */
+.pc{background:linear-gradient(160deg,var(--red) 0%,var(--red-deep) 100%);color:#fff;border-radius:24px;padding:22px;display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:center;position:relative;overflow:hidden}
+.pc::after{content:"";position:absolute;right:-50px;bottom:-90px;width:260px;height:260px;border:30px solid rgba(255,255,255,.07);border-radius:50%}
+.pc .ovr{font-family:var(--display);font-weight:700;font-size:92px;line-height:.85}
+.pc .ovr small{display:block;font-size:16px;letter-spacing:2px;opacity:.85;margin-top:8px}
+.pc h2{font-size:40px}
+.radar text{font-family:var(--display);font-weight:700;font-size:13px;fill:var(--night)}
+.badges{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.bdg{border-radius:14px;padding:10px 12px;background:#e8eae4;color:var(--soft);font-weight:600;font-size:14.5px;display:flex;gap:8px;align-items:center}
+.bdg::before{content:"";width:22px;height:22px;border-radius:50%;background:#cfd3c9;flex:none}
+.bdg.on{background:#fdefc8;color:#4b3500} .bdg.on::before{background:var(--gold);box-shadow:inset 0 0 0 4px #fff3cf}
+
+/* full-screen sheets */
+.sheet{position:fixed;inset:0;background:var(--chalk);z-index:10;display:none;flex-direction:column}
+.sheet.on{display:flex}
+.sheet .head{background:var(--night);color:#fff;display:flex;align-items:center;gap:12px;padding:10px clamp(14px,3vw,28px);flex:none}
+.sheet .head h2{font-size:26px;flex:1;min-width:0}
+.sheet .body{flex:1;overflow-y:auto;padding:16px clamp(14px,3vw,28px) 28px}
+.x{height:44px;padding:0 16px;border-radius:12px;background:rgba(255,255,255,.14);color:#fff;font-weight:700}
+.two{display:grid;grid-template-columns:1.1fr 1fr;gap:16px;align-items:start}
+ol.how{margin:6px 0 0;padding-left:22px} ol.how li{margin:5px 0}
+ul.tips{margin:6px 0 0;padding:0;list-style:none} ul.tips li{padding:6px 0 6px 28px;position:relative}
+ul.tips li::before{content:"";position:absolute;left:4px;top:13px;width:12px;height:12px;border-radius:50%;background:var(--teal)}
+ul.tips.fix li::before{background:var(--red)}
+.vh{position:absolute;opacity:0;width:1px;height:1px;overflow:hidden;pointer-events:none}
+label.btn{position:relative;cursor:pointer}
+.dia{background:#2f7d4f;border-radius:14px;overflow:hidden}
+.dia svg{display:block;width:100%}
+.style{background:var(--red-soft);border-radius:12px;padding:10px 12px;color:var(--red-deep);font-weight:500;font-size:15.5px}
+
+/* timer */
+.clock{text-align:center;padding:10px 0}
+.clock .ph{font-family:var(--display);font-style:italic;font-weight:800;font-size:30px;text-transform:uppercase}
+.clock .t{font-family:var(--display);font-weight:700;font-size:150px;line-height:.95;font-variant-numeric:tabular-nums}
+.clock.rest .t{color:var(--teal-deep)} .clock.work .t{color:var(--red)}
+.clock .now{font-size:21px;font-weight:600;min-height:30px}
+.sets{display:flex;gap:6px;justify-content:center;margin:10px 0 14px}
+.sets i{width:26px;height:10px;border-radius:99px;background:#dfe2da} .sets i.f{background:var(--teal)} .sets i.c{background:var(--red)}
+
+/* real footage and fair video review */
+.lesson{width:100%}.lesson-video{position:relative;width:100%;aspect-ratio:16/9;background:#151b22;border-radius:14px;overflow:hidden}
+.lesson-video iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.grade-meter{height:14px;overflow:hidden;border-radius:99px;background:#dde2db;margin:10px 0}
+.grade-meter i{display:block;height:100%;background:var(--teal);border-radius:99px}
+.grade-meter i.near{background:var(--gold-deep)}
+.grade-meter i.low{background:var(--red)}
+.grade-value{font-family:var(--display);font-size:74px;font-weight:800;line-height:1}
+.rubric{display:grid;gap:9px;margin-top:12px}.rubric-item{background:#f2f4ef;border-radius:13px;padding:10px}
+.rubric-item strong{display:block;font-size:14px;margin-bottom:6px}.rubric-item select{width:100%;min-height:44px;border:2px solid var(--line);background:#fff;border-radius:8px;padding:5px;font-size:15px}
+.grade-note{font-size:13px;color:var(--soft);margin-top:9px}
+/* video review */
+.rv{display:grid;grid-template-columns:1.35fr 1fr;gap:16px;align-items:start}
+.vbox{background:#000;border-radius:16px;overflow:hidden}
+.vbox video{display:block;width:100%;max-height:52vh;background:#000}
+.vctl{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin-top:8px}
+.vctl button{min-height:46px;border-radius:10px;background:#e3e6dd;font-weight:700;font-size:14.5px}
+.vctl .play{background:var(--night);color:#fff}
+input[type=range]{width:100%;margin:10px 0 0;accent-color:var(--red);height:28px}
+.count{font-family:var(--display);font-weight:700;font-size:120px;line-height:.9;text-align:center;font-variant-numeric:tabular-nums}
+.tap{width:100%;min-height:150px;border-radius:22px;background:var(--red);color:#fff;font-family:var(--display);font-style:italic;font-weight:800;font-size:54px;text-transform:uppercase;box-shadow:0 8px 0 var(--red-deep)}
+.tap:active{transform:translateY(5px);box-shadow:0 3px 0 var(--red-deep)}
+.tap.good{background:var(--teal);box-shadow:0 8px 0 var(--teal-deep);font-size:38px;min-height:110px}
+.tap.miss{background:#6b7078;box-shadow:0 8px 0 #474b52;font-size:38px;min-height:110px}
+.verdict{border-radius:20px;padding:22px;text-align:center;color:#fff}
+.verdict.pass{background:var(--teal-deep)} .verdict.fail{background:var(--night)}
+.verdict h2{font-size:44px}
+.verdict .sc{font-family:var(--display);font-weight:700;font-size:74px;line-height:1}
+.stars{font-size:30px;letter-spacing:4px;color:var(--gold)}
+.field{display:flex;flex-direction:column;gap:4px;font-size:14px;font-weight:600;color:var(--soft)}
+.field input,.field select{height:46px;border-radius:10px;border:2px solid var(--line);padding:0 10px;font-size:16px;font-weight:500;color:var(--night);background:#fff;min-width:0}
+table.tg{border-collapse:collapse;width:100%;font-size:14px}
+table.tg th,table.tg td{padding:4px;text-align:center}
+table.tg th:first-child,table.tg td:first-child{text-align:left;font-weight:600;white-space:nowrap}
+table.tg input{width:54px;height:36px;border:2px solid var(--line);border-radius:8px;text-align:center;font-size:14px;background:#fff}
+.scrollx{overflow-x:auto}
+
+.veil{position:fixed;inset:0;background:rgba(20,22,28,.6);display:none;align-items:center;justify-content:center;z-index:30;padding:16px}
+.veil.on{display:flex}
+.dlg{background:#fff;border-radius:22px;padding:22px;max-width:460px;width:100%;display:flex;flex-direction:column;gap:12px}
+.dlg h3{font-size:30px}
+.dlg input{height:54px;border-radius:12px;border:2px solid var(--line);padding:0 14px;font-size:20px;width:100%;background:#fff}
+.toast{position:fixed;left:50%;bottom:96px;transform:translate(-50%,20px);background:var(--night);color:#fff;padding:11px 20px;border-radius:99px;font-weight:700;opacity:0;pointer-events:none;transition:.25s;z-index:40;white-space:nowrap}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+.party{position:fixed;inset:0;pointer-events:none;z-index:35;overflow:hidden}
+.party i{position:absolute;top:-20px;width:12px;height:18px;border-radius:3px;animation:fall 1.8s ease-in forwards}
+@keyframes fall{to{transform:translateY(110vh) rotate(600deg)}}
+@media (prefers-reduced-motion:reduce){.party i{display:none}.toast{transition:none}}
+@media (max-width:760px){.grid2,.two,.rv{grid-template-columns:1fr}.hero{grid-template-columns:1fr}.steps10{grid-template-columns:repeat(5,1fr)}.clock .t{font-size:110px}.top h1 small{display:none}.kpis{grid-template-columns:1fr 1fr 1fr}}
+
+/* V8 uninterrupted session recording: on-screen coaching and camera in two panes. */
+.cont-panel{background:var(--card);border:2px solid var(--line);border-radius:18px;padding:14px;min-width:0}
+.cont-shell{display:grid;grid-template-columns:minmax(250px,1.08fr) minmax(280px,.92fr);gap:14px;align-items:start}
+.cont-camera{position:relative;overflow:hidden;border-radius:14px;background:#101318;min-height:250px;aspect-ratio:4/3;display:flex;align-items:center;justify-content:center;color:#fff}
+.cont-camera video{width:100%;height:100%;object-fit:cover;position:absolute;inset:0;transform:none}
+.cont-camera .cam-placeholder{padding:20px;text-align:center;max-width:280px}
+.cont-reclabel{position:absolute;top:10px;left:10px;z-index:1;background:#c8102e;color:#fff;padding:7px 11px;border-radius:999px;font-size:13px;font-weight:800;letter-spacing:.4px}
+.cont-reclabel i{display:inline-block;width:9px;height:9px;border-radius:50%;background:white;margin-right:6px;animation:recdot 1.3s infinite}
+@keyframes recdot{50%{opacity:.32}}
+.cont-recclock{position:absolute;bottom:10px;left:10px;right:10px;text-align:center;font-weight:800;text-shadow:0 2px 8px #000;background:#0009;border-radius:9px;padding:5px;font-variant-numeric:tabular-nums}
+.cont-countdown{position:absolute;z-index:3;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(11,22,19,.86);color:white;border:3px solid var(--gold);border-radius:22px;min-width:150px;padding:12px 18px;text-align:center;pointer-events:none;box-shadow:0 8px 22px #0008}
+.cont-countdown[hidden]{display:none}
+.cont-countdown strong{display:block;color:#fff;font-size:12px;text-transform:uppercase;letter-spacing:1px;line-height:1.2}
+.cont-countdown b{font-family:var(--display);font-size:80px;line-height:.96;font-weight:800;font-variant-numeric:tabular-nums}
+.cont-phase.ready{background:var(--teal-deep)}
+.cont-phase.ready b{color:var(--gold)}
+.cont-phase.work{background:var(--red-deep)}
+.cont-camflip{display:flex;gap:9px;align-items:center;justify-content:space-between;margin:10px 0 0;flex-wrap:wrap}
+.cont-camflip .btn{min-height:44px}
+
+.cont-instructions{display:flex;flex-direction:column;gap:9px}
+.cont-instructions ol{margin:4px 0 0;padding-left:22px}
+.cont-instructions li{margin-bottom:7px;line-height:1.36}
+.cont-instructions .cont-tag{background:var(--red-soft);color:var(--red-deep);font-size:12px;font-weight:800;letter-spacing:.5px;padding:5px 10px;border-radius:999px;align-self:start}
+.cont-phase{background:var(--night);color:#fff;padding:12px 14px;border-radius:14px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.cont-phase strong{font-family:var(--display);font-size:30px;line-height:1}
+.cont-phase b{font-family:var(--display);font-size:43px;line-height:1;font-variant-numeric:tabular-nums}
+.cont-progress{height:9px;border-radius:99px;background:#e7e1d6;overflow:hidden}
+.cont-progress i{display:block;height:100%;width:0%;background:var(--red);transition:width .2s}
+.cont-stage-list{display:flex;gap:5px;flex-wrap:wrap;margin-top:7px}
+.cont-stage-list span{font-size:12px;border-radius:7px;padding:5px 8px;background:#efeae3;font-weight:700}
+.cont-stage-list span.now{background:var(--red);color:#fff}
+.cont-stage-list span.done{background:var(--teal);color:#fff}
+.cont-actions{display:flex;gap:9px;flex-wrap:wrap}
+.cont-actions .btn{flex:1;min-width:140px}
+.cont-warning{font-size:13.5px;color:var(--soft);line-height:1.45}
+@media(max-width:750px){.cont-shell{grid-template-columns:1fr}.cont-camera{aspect-ratio:16/10;min-height:175px}.cont-panel{padding:11px}.cont-instructions{gap:6px}.cont-instructions li{margin-bottom:5px}.cont-phase strong{font-size:25px}.cont-phase b{font-size:34px}}
+
+/* Parent review tools — child-facing app appearance is unchanged. */
+.admin-review video{width:100%;max-height:38vh;border-radius:12px;background:#14171d;display:block}
+.admin-review .field{margin-top:11px}
+.admin-review .field input,.admin-review .field select,.admin-review textarea{width:100%}
+.admin-review textarea{resize:vertical;min-height:82px;border:2px solid var(--line);border-radius:10px;padding:11px;font:inherit;background:#fff;color:var(--night)}
+.admin-meta{font-size:13px;color:var(--soft);overflow-wrap:anywhere}
+.admin-note{background:#fff6e4;border:1.5px solid #efd7a5;border-radius:12px;padding:11px;margin-top:11px;font-size:14px}
+.admin-audit{padding:10px 0;border-bottom:1px solid var(--line)}
+.admin-audit:last-child{border:0}
+</style>
+</head>
+<body>
+<header class="top">
+  <h1><span id="t-name">Benjamin</span>'s First Team Academy<small id="t-sub">You'll Never Walk Alone · Train. Test. Level up.</small></h1>
+  <div class="pill" id="t-week"></div>
+  <div class="pill" id="t-xp"></div>
+  <button class="lock" id="b-parent" aria-label="Parents"><svg viewBox="0 0 24 24"><path d="M7 11V8a5 5 0 0110 0v3M5 11h14v10H5z" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linejoin="round"/></svg></button>
+</header>
+<main id="main"></main>
+<nav class="tabs" id="tabs">
+  <button class="tab on" data-tab="home"><svg viewBox="0 0 24 24"><path d="M4 11l8-7 8 7v9h-5v-6H9v6H4z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></svg>Home</button>
+  <button class="tab" data-tab="train"><svg viewBox="0 0 24 24"><path d="M6 20l4-9 4 9M5 20h14M9.2 13h5.6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>Train</button>
+  <button class="tab" data-tab="tests"><svg viewBox="0 0 24 24"><path d="M4 18h3v-5H4zM10.5 18h3V8h-3zM17 18h3V4h-3z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></svg>Benchmarks</button>
+  <button class="tab" data-tab="rewards"><svg viewBox="0 0 24 24"><path d="M4 10h16v10H4zM3 6h18v4H3zM12 6v14M12 6c-2-4-6-3-5 0M12 6c2-4 6-3 5 0" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></svg>Rewards</button>
+  <button class="tab" data-tab="card"><svg viewBox="0 0 24 24"><path d="M12 12a4 4 0 100-8 4 4 0 000 8zM4 21c1-5 4-7 8-7s7 2 8 7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>My Card</button>
+</nav>
+<section class="sheet" id="sheet"><div class="head"><h2 id="sh-title"></h2><button class="x" id="sh-x">Close</button></div><div class="body"><div class="wrap" id="sh-body"></div></div></section>
+<div class="veil" id="veil"><div class="dlg" id="dlg"></div></div>
+<div class="toast" id="toast"></div>
+<div class="party" id="party"></div>
+<script>
+/* data */
+/* First Team Academy: benchmarks, tests, drills, missions */
+window.AC = (function () {
+  'use strict';
+  var BENCH = [
+    { n: 1, age: 'U10', name: 'Top Team' }, { n: 2, age: 'U11', name: 'Select' }, { n: 3, age: 'U12', name: 'Select' },
+    { n: 4, age: 'U13', name: 'Premier' }, { n: 5, age: 'U14', name: 'Premier' }, { n: 6, age: 'U15', name: 'Elite' },
+    { n: 7, age: 'U16', name: 'Elite' }, { n: 8, age: 'U17', name: 'Showcase' }, { n: 9, age: 'U18', name: 'State Pool' },
+    { n: 10, age: 'U18', name: 'ODP / ECNL' }
+  ];
+  function tiers(a, b) { return function (l) { return l <= a ? 0 : l <= b ? 1 : 2; }; }
+  var one = function () { return 0; };
+
+  /* mode: window = count taps for a set time after the start mark; time = mark start and finish;
+     run = longest unbroken run; reps = good or miss, 10 tries */
+  var TESTS = [
+    {
+      id: 'wall', name: 'Wall Pass 60', area: 'First touch', mode: 'window', secs: 60, unit: 'passes', gear: 'Pass-back, ball',
+      targets: [14, 17, 20, 20, 23, 26, 34, 38, 42, 46], tier: tiers(3, 6), dia: 'wall',
+      rules: ['Stand 5 big steps from the pass-back. Two touches: control the ball, then pass it. Use any foot.',
+        'Stand 6 big steps away. Two touches, and switch feet: control with one foot, pass with the other.',
+        'Stand 6 big steps away. One touch only. Left foot, right foot, left foot, right foot.'],
+      count: 'Tap once for every pass that comes back and stays under control.',
+      points: ['On your toes before the ball arrives', 'First touch goes out of your feet, not under you', 'Pass with the inside of the foot, firm and flat'],
+      help: ['t1', 't2', 't4']
+    },
+    {
+      id: 'juggle', name: 'Juggle Count', area: 'Ball control', mode: 'run', unit: 'juggles in a row', gear: 'Ball',
+      targets: [10, 20, 35, 50, 75, 100, 130, 160, 200, 250], tier: tiers(3, 6), dia: 'ball',
+      rules: ['Drop the ball from your hands. Feet and thighs only. Count your longest run before it hits the ground.',
+        'Drop the ball from your hands. Feet only. Count your longest run.',
+        'Start with the ball on the ground and flick it up. Feet only, and use both feet.'],
+      count: 'Tap once for every juggle. Tap Dropped when the ball hits the ground. Your best run is your score.',
+      points: ['Lock your ankle and point your toes a little up', 'Small touches, ball no higher than your waist', 'Knees soft, eyes on the ball'],
+      help: ['c3', 'c4', 'c5']
+    },
+    {
+      id: 'weave', name: 'Cone Weave', area: 'Dribbling', mode: 'time', unit: 'seconds', gear: '6 cones, ball', low: 1,
+      targets: [18, 17, 16, 15, 14, 13.2, 12.5, 11.8, 11.2, 10.5], tier: tiers(3, 6), dia: 'weave',
+      rules: ['Put 6 cones in a line, 2 big steps apart. Weave up through all the cones, go round the last one, and weave back. Any foot.',
+        'Same course. Use both feet, and use the outside of your foot to go round each cone.',
+        'Same course. Both feet, a touch on every step, and a tight turn at the end cone with no wide swing.'],
+      count: 'Mark the moment you start and the moment you cross the first cone again. Every cone you knock adds 1 second.',
+      points: ['Lots of small touches, ball close to your foot', 'Bend your knees and stay low', 'Head up between cones, not staring at the ball'],
+      help: ['d1', 'd2', 'd7']
+    },
+    {
+      id: 'taps', name: 'Toe-Tap 30', area: 'Quick feet', mode: 'window', secs: 30, unit: 'taps', gear: 'Ball',
+      targets: [40, 46, 52, 58, 64, 70, 76, 82, 88, 94], tier: one, dia: 'ball',
+      rules: ['Tap the top of the ball with the bottom of your toes, one foot then the other, as fast as you can for 30 seconds. The ball stays still.'],
+      count: 'Tap once for every toe tap. Slow the video down if you need to.',
+      points: ['Stay on the balls of your feet, bouncing', 'Light taps, do not push the ball away', 'Arms loose and pumping like you are running'],
+      help: ['c1', 'c2', 'c6']
+    },
+    {
+      id: 'ladder', name: 'Ladder Runs 60', area: 'Coordination', mode: 'window', secs: 60, unit: 'clean runs', gear: 'Speed ladder',
+      targets: [5, 6, 6, 6, 7, 7, 7, 8, 8, 8], tier: function (l) { return l - 1; }, dia: 'ladder',
+      rules: ['Pattern: one foot in each square. Run through, then jog back round to the start.',
+        'Pattern: two feet in each square. Run through, then jog back round to the start.',
+        'Pattern: sideways, two feet in each square. Lead with your left foot one run and your right foot the next.',
+        'Pattern: in, in, out, out. Both feet step into the square, then both feet step outside it.',
+        'Pattern: the icky shuffle. In, in, out, moving along the ladder from side to side.',
+        'Pattern: icky shuffle, then sprint 5 big steps out of the end of the ladder.',
+        'Pattern: hopscotch. One foot in the square, then two feet outside the next one.',
+        'Pattern: crossover steps going sideways. One foot crosses in front, then behind.',
+        'Pattern: one-leg hops in every square. Left leg one run, right leg the next.',
+        'Pattern: the icky shuffle going backwards.'],
+      count: 'Tap once for every clean run through the ladder. A run where you kick the ladder or miss a square does not count.',
+      points: ['Quick, light feet on the balls of your feet', 'Pump your arms in time with your feet', 'Eyes up as soon as you know the pattern'],
+      help: ['f1', 'f2', 'f3']
+    },
+    {
+      id: 'balance', name: 'Star Balance', area: 'Balance', mode: 'window', secs: 30, unit: 'cone taps', gear: '3 cones',
+      targets: [10, 12, 14, 16, 18, 20, 22, 24, 26, 28], tier: tiers(5, 10), dia: 'star',
+      rules: ['Stand on your weaker leg. Put 3 cones one big step away: in front, to the side and behind. Tap them lightly with your free foot, one after another, for 30 seconds.',
+        'Same test with your hands on your hips the whole time.'],
+      count: 'Tap once for every cone you touch. Stop counting if your free foot rests on the ground.',
+      points: ['Standing knee a little bent, never locked', 'Tummy tight, chest tall', 'Reach with a slow, light foot'],
+      help: ['b1', 'b2', 'b3']
+    },
+    {
+      id: 'shuttle', name: 'Shuttle Engine', area: 'Stamina', mode: 'window', secs: 240, unit: 'lengths', gear: '2 cones',
+      targets: [30, 33, 36, 39, 42, 44, 46, 48, 50, 52], tier: one, dia: 'shuttle',
+      rules: ['Put two cones 20 big steps apart. Run from one to the other as many times as you can in 4 minutes. Touch the ground at each cone.'],
+      count: 'Tap once every time you reach a cone. You can play the video at double speed.',
+      points: ['Start at a pace you can keep for all 4 minutes', 'Turn low and push off hard', 'Breathe out on every turn'],
+      help: ['e1', 'e2', 'e4']
+    },
+    {
+      id: 'rope', name: 'Jump Rope 60', area: 'Stamina + rhythm', mode: 'window', secs: 60, unit: 'jumps', gear: 'Jump rope',
+      targets: [50, 60, 70, 80, 90, 100, 110, 120, 130, 140], tier: tiers(4, 10), dia: 'ball',
+      rules: ['Jump rope for 60 seconds with two feet together. If you trip, start again straight away and keep counting.',
+        'Jump rope for 60 seconds with a running step: one foot, then the other. If you trip, start again and keep counting.'],
+      count: 'Tap once for every jump over the rope. Slow the video down if you need to.',
+      points: ['Small jumps, just high enough for the rope', 'Turn the rope with your wrists, elbows in', 'Land softly on the balls of your feet'],
+      help: ['w2', 'f4', 'e3']
+    },
+    {
+      id: 'skill', name: 'Skill Move', area: '1v1 moves', mode: 'reps', unit: 'clean moves out of 10', gear: 'Cone, ball',
+      targets: [7, 7, 8, 8, 8, 8, 9, 9, 9, 9], tier: function (l) { return l - 1; }, dia: 'move',
+      moves: ['Pull-Back Turn', 'The Chop', 'Step-Over', 'Body Feint and Cut Inside', 'Cruyff Turn', 'Scissors', 'La Croqueta', 'Elastico', 'Roulette Spin', 'Scissors, Croqueta, Shot'],
+      rules: ['Dribble at a cone. Stop the ball with your sole, pull it back behind you, turn and go the other way.',
+        'Dribble at a cone. Chop the ball across your body with the inside of your foot and speed away.',
+        'Dribble at a cone. Swing one foot round the front of the ball without touching it, then take it away with the outside of the other foot.',
+        'Dribble at a cone from the wing. Drop your shoulder to the outside, then cut inside with the ball on your other foot.',
+        'Shape up as if to pass or shoot. Instead, drag the ball behind your standing leg with the inside of your foot, then turn and go.',
+        'Dribble at a cone. Two step-overs, one with each foot, then burst away with the outside of your foot.',
+        'Dribble at a cone. Slide the ball from the inside of one foot to the inside of the other in one quick move, and go past.',
+        'Dribble at a cone. Push the ball out with the outside of your foot and snap it back in with the inside, all in one touch.',
+        'Dribble at a cone. Stop the ball with one sole, spin your body round, and drag it away with the other sole.',
+        'Dribble at a cone. Scissors, straight into a croqueta past a second cone, then shoot with your weaker foot.'],
+      count: 'Do the move 10 times: 5 with each foot. For each try, tap Good or Miss. A good one is smooth, fast, and the ball stays close.',
+      points: ['Sell the fake with your whole body, not just your foot', 'Ball stays within one step of you', 'Explode away after the move with a change of speed'],
+      help: ['d4', 'd5', 'd6']
+    },
+    {
+      id: 'finish', name: 'Target Finishing', area: 'Finishing', mode: 'reps', unit: 'hits out of 10', gear: 'Goal, cones, ball',
+      targets: [6, 7, 4, 5, 5, 6, 5, 5, 6, 6], tier: tiers(2, 6), dia: 'goal',
+      rules: ['Take 10 shots from 10 big steps out. Every shot that goes in the goal counts.',
+        'Put a cone one big step inside each post to make two corner zones. Take 10 shots from 12 big steps. Only shots into a corner zone count.',
+        'Corner zones again, from 16 big steps. Take 5 shots with each foot. Only corner-zone shots count.'],
+      count: 'For each of your 10 shots, tap Good if it counted or Miss if it did not.',
+      points: ['Standing foot next to the ball, pointing at your target', 'Strike through the middle of the ball with your laces', 'Head over the ball, land on your kicking foot'],
+      help: ['g1', 'g2', 'g3']
+    }
+  ];
+
+  var AREAS = { warm: 'Warm-up', touch: 'First touch', dribble: 'Dribbling', control: 'Ball control', feet: 'Coordination', balance: 'Balance', engine: 'Stamina', strong: 'Strength', finish: 'Finishing' };
+  /* timer: [work seconds, rest seconds, sets] */
+  function D(id, area, name, min, gear, timer, setup, steps, tips, more, style) { return { id: id, area: area, name: name, min: min, gear: gear, timer: timer, setup: setup, steps: steps, tips: tips, more: more, style: style }; }
+  var DRILLS = [
+    D('w1', 'warm', 'Dynamic Warm-Up', 5, 'Nothing', [30, 5, 8], 'Find 10 big steps of space.', ['High knees', 'Heel flicks', 'Side shuffles', 'Open the gate (knee out)', 'Close the gate (knee in)', 'Skips with big arms', 'Lunge and twist', 'Fast feet on the spot'], ['Start easy and get faster', 'Stay tall'], 'Add a sprint at the end of each one.'),
+    D('w2', 'warm', 'Rope Rhythm', 4, 'Jump rope', [30, 15, 5], 'Clear space above your head.', ['Two feet together', 'Running step', 'Two feet together', 'Side to side like a skier', 'Your choice, as fast as you can'], ['Tiny jumps', 'Wrists turn the rope'], 'Try 5 jumps on one foot, then 5 on the other.'),
+    D('w3', 'warm', 'Ladder Wake-Up', 4, 'Speed ladder', [40, 15, 4], 'Lay the ladder flat. Jog back to the start after each run.', ['One foot in each square', 'Two feet in each square', 'Sideways, two feet in', 'In, in, out, out'], ['Light and quick', 'Arms pump'], 'Finish each run with a 5-step sprint.'),
+
+    D('t1', 'touch', 'Two-Touch Wall', 5, 'Pass-back, ball', [45, 20, 4], 'Stand 5 big steps from the pass-back.', ['Pass firmly into the pass-back', 'Control with the inside of your foot', 'Pass again with your second touch', 'Count your clean ones each set and try to beat it'], ['On your toes before the ball comes', 'Soft first touch, like catching an egg', 'Touch it slightly in front of you'], 'Move back one step when you get 12 clean in a set.'),
+    D('t2', 'touch', 'Switch-Feet Wall', 5, 'Pass-back, ball', [45, 20, 4], 'Stand 5 big steps from the pass-back.', ['Control with your right foot', 'Pass with your left foot', 'Next ball: control left, pass right', 'Keep switching'], ['Open your body so the ball can roll across you', 'Weaker foot gets the same number of touches'], 'Use only the outside of your foot for the first touch.'),
+    D('t3', 'touch', 'Open Up and Turn', 6, 'Pass-back, 2 cones, ball', [45, 20, 4], 'Put a 2-cone gate behind you, 4 big steps back.', ['Pass into the pass-back', 'Let the ball roll across your body', 'Take your first touch with your back foot, toward the gate', 'Dribble through the gate and come back'], ['Look over your shoulder before the ball arrives', 'First touch takes you where you want to go'], 'Check your shoulder and shout which side the gate is on.'),
+    D('t4', 'touch', 'One-Touch Rhythm', 4, 'Pass-back, ball', [30, 20, 5], 'Stand 4 big steps from the pass-back.', ['One touch only', 'Right foot, left foot, right foot, left foot', 'Keep the ball on the ground'], ['Little bounces between passes', 'Lock your ankle', 'Hit the middle of the ball'], 'Take one step back each set.'),
+    D('t5', 'touch', 'Touch and Go', 6, 'Pass-back, 2 cones, ball', [45, 20, 4], 'Put a cone 3 big steps to your left and one 3 steps to your right.', ['Pass into the pass-back', 'First touch pushes the ball toward one cone', 'Dribble round the cone at speed', 'Come back and go the other way'], ['First touch goes out of your feet', 'Change speed after the touch'], 'Use the outside of your foot for the first touch.'),
+    D('t6', 'touch', 'Sky Ball', 5, 'Ball', [40, 20, 4], 'Hold the ball in your hands.', ['Throw the ball above your head', 'Kill it dead with your foot before the second bounce', 'Next one with your thigh, then your foot', 'Switch feet every time'], ['Get under the ball early', 'Pull your foot down as the ball lands on it'], 'Control it without letting it bounce at all.'),
+
+    D('d1', 'dribble', 'Cone Weave', 5, '6 cones, ball', [40, 20, 5], 'Put 6 cones in a line, 2 big steps apart.', ['Weave up through the cones', 'Go round the last cone', 'Weave back', 'Rest, then go again'], ['Small touches', 'Use the inside and the outside of your foot', 'Knees bent, stay low'], 'One run right foot only, one run left foot only.'),
+    D('d2', 'dribble', 'Figure 8', 4, '2 cones, ball', [40, 20, 4], 'Put 2 cones 3 big steps apart.', ['Dribble a figure 8 around the two cones', 'Use the outside of your foot to turn', 'Switch direction every set'], ['Lean into the turn', 'Ball stays close on the turn'], 'Move the cones to 2 big steps apart.'),
+    D('d3', 'dribble', 'Stop and Go', 5, '4 cones, ball', [30, 30, 6], 'Put 4 cones in a line, 5 big steps apart.', ['Dribble fast to the first cone', 'Stop the ball dead with your sole', 'Explode to the next cone', 'Stop, go, stop, go'], ['Big touch when you go, small touch when you stop', 'Change of speed beats defenders'], 'Add a fake before you go.'),
+    D('d4', 'dribble', 'Box Turns', 6, '4 cones, ball', [45, 20, 4], 'Make a square, 5 big steps on each side.', ['Dribble to a corner and turn', 'Corner 1: pull-back turn', 'Corner 2: inside hook', 'Corner 3: outside hook', 'Corner 4: Cruyff turn'], ['Turn sharply, like a door slamming', 'Speed up out of every turn'], 'Go round the other way using your weaker foot.'),
+    D('d5', 'dribble', 'Cut Inside', 6, 'Cone, goal, ball', [40, 25, 5], 'Put a cone 12 big steps from goal, out toward the right. It is your defender.', ['Dribble at the cone from the wing', 'Drop your shoulder as if going down the line', 'Cut inside across the cone', 'Shoot or pass into the goal with your other foot', 'Switch wings every set'], ['Slow down a little, then burst', 'The fake is in your shoulders', 'Take the shot early'], 'Add a second cone and cut inside both.', 'Lamine Yamal plays on the right wing and loves to cut inside onto his left foot. This is that move.'),
+    D('d6', 'dribble', 'Take Him On', 6, '2 cones, ball', [30, 30, 6], 'Put a cone 10 big steps away. It is your defender. Put another cone 5 steps behind it.', ['Run at the defender cone with the ball', 'Do one move: a step-over or a body feint', 'Explode past to the far cone', 'Walk back and go again'], ['Run straight at the defender', 'Do the move one big step before the cone', 'Your first two steps after the move are a sprint'], 'Alternate going past on the left and on the right.', 'Rio Ngumoha is a direct winger: he runs straight at defenders and takes them on one against one.'),
+    D('d7', 'dribble', 'Tight Space', 4, '4 cones, ball', [40, 20, 4], 'Make a small box, 3 big steps on each side.', ['Keep the ball moving inside the box', 'Touch the ball with every step', 'Change direction every 3 touches', 'Never leave the box'], ['Use every part of your foot', 'Head up: look for the cones without staring at the ball'], 'Make the box smaller.'),
+
+    D('c1', 'control', 'Taps and Bells', 4, 'Ball', [30, 20, 6], 'Just you and the ball.', ['Set 1: toe taps on top of the ball', 'Set 2: bells, knocking the ball between the insides of your feet', 'Keep swapping each set'], ['Stay bouncing on your toes', 'Light touches'], 'Do the bells while moving forward and back.'),
+    D('c2', 'control', 'Rolls and V-Pulls', 5, 'Ball', [40, 20, 4], 'Just you and the ball.', ['Roll the ball across your body with your sole', 'Stop it with the inside of the other foot', 'V-pull: drag it back with your sole, push it out with the inside', 'Switch feet every time'], ['Stand tall, knees soft', 'Ball never stops moving'], 'Look up at a target while you do it.'),
+    D('c3', 'control', 'Juggle Ladder', 6, 'Ball', [60, 15, 4], 'Just you and the ball.', ['1 juggle and catch', '2 juggles and catch', '3 juggles and catch', 'Keep climbing. If you drop it, go back down one step'], ['Lock your ankle', 'Keep it below your waist'], 'Climb the ladder with your weaker foot only.'),
+    D('c4', 'control', 'Bounce Juggles', 5, 'Ball', [45, 15, 4], 'Just you and the ball.', ['Kick the ball up, let it bounce once, kick it up again', 'Set 1: right foot only', 'Set 2: left foot only', 'Sets 3 and 4: one foot, then the other'], ['Hit the ball with your laces', 'Same height every time'], 'Take away the bounce for as long as you can.'),
+    D('c5', 'control', 'Thigh and Foot', 5, 'Ball', [45, 15, 4], 'Just you and the ball.', ['Drop the ball on your thigh, then your foot, then catch', 'Next: foot, thigh, foot, catch', 'Switch legs each try'], ['Thigh flat like a table', 'Soft touches'], 'Add a header: foot, thigh, head, catch.'),
+    D('c6', 'control', 'Side to Side', 4, 'Ball', [30, 20, 5], 'Just you and the ball.', ['Push the ball from the inside of one foot to the inside of the other', 'Move sideways as you do it', 'Then push it out with the outside and pull it back with the inside'], ['Quick feet, ball stays under you', 'Hips low'], 'Go as fast as you can for the last 10 seconds.'),
+
+    D('f1', 'feet', 'Ladder Basics', 5, 'Speed ladder', [40, 20, 5], 'Lay the ladder flat. Jog back after each run.', ['One foot in each square', 'Two feet in each square', 'Sideways, two feet in', 'In, in, out, out', 'Your best pattern, top speed'], ['Do it right first, then do it fast', 'Arms pump in time'], 'Do every pattern leading with your weaker foot.'),
+    D('f2', 'feet', 'Icky Shuffle School', 5, 'Speed ladder', [40, 20, 5], 'Stand at the left side of the ladder.', ['Right foot in, left foot in, right foot out to the right', 'Left foot in, right foot in, left foot out to the left', 'Say it out loud: in, in, out', 'Walk it, then jog it, then run it'], ['Stay light', 'Lean a little forward'], 'Try it going backwards.'),
+    D('f3', 'feet', 'Ladder and Ball', 6, 'Speed ladder, cone, ball', [40, 20, 5], 'Put a ball 3 big steps past the end of the ladder and a cone 5 steps past that.', ['Quick feet through the ladder', 'Burst out to the ball', 'Dribble round the cone and back', 'Leave the ball and jog to the start'], ['Fast feet, then fast ball', 'First touch after the ladder is a big one'], 'Use a new ladder pattern every set.'),
+    D('f4', 'feet', 'Rope Skills', 4, 'Jump rope', [30, 15, 6], 'Clear space above your head.', ['Two feet together', 'Running step', 'Side to side', 'Right foot only', 'Left foot only', 'Your fastest'], ['Stay relaxed', 'Small jumps'], 'Try a double-under: the rope goes round twice in one jump.'),
+
+    D('b1', 'balance', 'Flamingo Holds', 4, 'Nothing', [30, 10, 6], 'Stand on flat ground.', ['Stand on your right leg, knee a little bent', 'Stand on your left leg', 'Right again, arms crossed', 'Left again, arms crossed', 'Right with your eyes closed', 'Left with your eyes closed'], ['Squeeze your tummy', 'Pick a spot to look at'], 'Hold a ball above your head.'),
+    D('b2', 'balance', 'Star Taps', 4, '3 cones', [30, 15, 6], 'Stand on one leg with 3 cones one big step away: front, side and back.', ['Tap the front cone with your free foot', 'Tap the side cone', 'Tap the back cone', 'Keep going round. Swap legs each set'], ['Slow and light', 'Standing knee stays bent'], 'Move the cones a little further away.'),
+    D('b3', 'balance', 'Hop and Stick', 5, '4 cones', [40, 20, 4], 'Put 4 cones in a line, one big step apart.', ['Hop forward on one leg from cone to cone', 'Land and freeze for 2 seconds each time', 'Swap legs on the way back', 'Sets 3 and 4: hop sideways'], ['Land softly, knee bent', 'No wobbling before the next hop'], 'Hop further between cones.'),
+    D('b4', 'balance', 'One-Leg Volleys', 5, 'Ball', [40, 20, 4], 'Hold the ball in your hands.', ['Stand on one leg', 'Drop the ball and volley it back to your hands with the inside of your free foot', 'Do not put your foot down between volleys', 'Swap legs each set'], ['Tall body', 'Soft touch back to your hands'], 'Volley with your laces, then with the outside of your foot.'),
+
+    D('e1', 'engine', 'Shuttle 30s', 8, '2 cones', [30, 30, 8], 'Put two cones 20 big steps apart.', ['Run cone to cone for 30 seconds', 'Count your lengths', 'Rest for 30 seconds', 'Try to match your count every set'], ['Same speed in set 8 as in set 1', 'Push off low at each turn'], 'Rest for only 20 seconds.'),
+    D('e2', 'engine', 'Dribble Shuttles', 6, '2 cones, ball', [30, 30, 6], 'Put two cones 15 big steps apart.', ['Dribble cone to cone for 30 seconds', 'Turn with a different move each time', 'Rest for 30 seconds'], ['Big touches in the middle, small touches at the turn', 'Keep your head up'], 'Use your weaker foot for every turn.'),
+    D('e3', 'engine', 'Rope Intervals', 6, 'Jump rope', [40, 20, 6], 'Clear space above your head.', ['Jump for 40 seconds', 'Rest for 20 seconds', 'Count your jumps in the first set and chase that number'], ['Find a rhythm', 'Breathe!'], 'Running step for the whole set.'),
+    D('e4', 'engine', 'Pyramid Runs', 7, '5 cones', [50, 60, 4], 'Put cones at 5, 10, 15 and 20 big steps from a start cone.', ['Run to the 5 cone and back', 'Run to the 10 cone and back', 'Then the 15, then the 20', 'Rest, then climb the pyramid again'], ['Touch the ground at every cone', 'Fast turns'], 'Come back down the pyramid too: 20, 15, 10, 5.'),
+
+    D('s1', 'strong', 'Band Walks', 4, 'Resistance band', [30, 20, 5], 'Put a light band just above your knees.', ['Bend your knees a little, feet apart', 'Step sideways 10 steps to the right', '10 steps to the left', 'Then walk forward and back, feet wide'], ['Knees push out against the band', 'Stay low, chest up'], 'Move the band down to your ankles.'),
+    D('s2', 'strong', 'Bridges and Clams', 4, 'Resistance band', [30, 20, 5], 'Put a light band just above your knees. Lie on your back.', ['Bridge: lift your hips up, hold for 2 seconds, lower', 'Roll on your side for clams: feet together, open your top knee', 'Swap sides each set'], ['Slow and smooth', 'Squeeze at the top'], 'Bridge with one leg straight out.'),
+    D('s3', 'strong', 'Plank Pack', 4, 'Nothing', [25, 15, 6], 'Find a soft spot on the ground.', ['Front plank', 'Side plank, right', 'Side plank, left', 'Superman: lift arms and legs', 'Front plank', 'Dead bug: opposite arm and leg'], ['Straight line from head to heels', 'Keep breathing'], 'Lift one foot during the front plank.'),
+
+    D('g1', 'finish', 'Corner Hunter', 6, 'Goal, 2 cones, ball', [45, 20, 5], 'Put a cone one big step inside each post. Shoot from 10 big steps.', ['Aim for the corner zones', '5 shots right foot, then 5 shots left foot', 'Count your hits'], ['Pick your corner before you look down', 'Standing foot points at the target'], 'Move back two steps.'),
+    D('g2', 'finish', 'First-Time Finish', 6, 'Pass-back, goal, ball', [45, 20, 5], 'Put the pass-back to the side of the goal, 8 big steps out.', ['Pass into the pass-back', 'One touch to set the ball in front of you', 'Shoot with your next touch', 'Switch sides every set'], ['Set touch goes toward goal', 'Quick shot, do not wait'], 'Shoot first time with no set touch.'),
+    D('g3', 'finish', 'Dribble and Strike', 6, '3 cones, goal, ball', [40, 25, 5], 'Put 3 cones in a line leading to the goal, ending 10 big steps out.', ['Weave through the 3 cones', 'Push the ball out of your feet', 'Shoot before the ball stops rolling'], ['Last touch sets up the shot', 'Hit the target first, then add power'], 'Finish with your weaker foot only.')
+  ];
+
+  var MISSIONS = [
+    'Watch a Lamine Yamal highlights video. Count how many times he cuts inside onto his left foot. Then go and do the Cut Inside drill.',
+    'Watch Rio Ngumoha take on a defender. What does he do just before he speeds up? Try it on a cone.',
+    'Watch 10 minutes of a Liverpool match and only watch one winger. Where does he stand when his team does not have the ball?',
+    'Search for a beginner juggling video. Write down two tips, then do the Juggle Ladder.',
+    'Watch one midfielder for 5 minutes. Count how many times he looks over his shoulder before the ball comes to him.',
+    'In your soccer video game, score a goal straight after a skill move you are learning in real life. Then practice that move outside for 5 minutes.',
+    'Search "la croqueta tutorial". Watch it twice, once at slow speed. Try 10 with each foot.',
+    'Watch a pro strike a free kick in slow motion. Where is his standing foot when he hits the ball?',
+    'Search "first touch pass-back drills". Pick one new idea and add it to your next session.',
+    'Watch a defender in a 1v1. Notice how he stands side-on. How could your move beat that?'
+  ];
+
+  var RANKS = [[0, 'Ball Kid'], [250, 'Trialist'], [750, 'Academy Player'], [1500, 'Squad Player'], [3000, 'Starter'], [5500, 'Playmaker'], [9000, 'Captain'], [16500, 'Star Player'], [30000, 'First Teamer'], [55000, 'Club Legend']];
+  var BADGES = [
+    ['day1', 'First training day', function (s) { return s.days.length >= 1; }], ['day10', '10 training days', function (s) { return s.days.length >= 10; }],
+    ['day25', '25 training days', function (s) { return s.days.length >= 25; }], ['day50', '50 training days', function (s) { return s.days.length >= 50; }],
+    ['day100', '100 training days', function (s) { return s.days.length >= 100; }],
+    ['test1', 'First test passed', function (s, d) { return d.passes >= 1; }], ['test10', '10 test levels passed', function (s, d) { return d.passes >= 10; }], ['test40', '40 test levels passed', function (s, d) { return d.passes >= 40; }],
+    ['week4', 'Perfect week: 4 days', function (s, d) { return d.week >= 4 || d.weekStreak >= 1; }], ['ws4', '4 perfect weeks in a row', function (s, d) { return d.weekStreak >= 4; }],
+    ['jug25', '25 juggles', function (s) { return (s.tests.juggle.pb || 0) >= 25; }], ['jug100', '100 juggles', function (s) { return (s.tests.juggle.pb || 0) >= 100; }],
+    ['b1', 'Benchmark 1 complete', function (s, d) { return d.bench >= 1; }], ['b3', 'Benchmark 3 complete', function (s, d) { return d.bench >= 3; }], ['b5', 'Benchmark 5 complete', function (s, d) { return d.bench >= 5; }],
+    ['coach', 'First coach check', function (s) { return s.coachChecks >= 1; }]
+  ];
+  var byId = {}; TESTS.forEach(function (t) { byId[t.id] = t; });
+  // Real-life demonstration footage. Links go to the original YouTube creators.
+  // These explain the technique; a video's drill may not match our exact benchmark layout.
+  var VIDEO = {
+    wall:   { id: 'bsXmRJEs6Yo', name: 'First Touch Training for Footballers', creator: '7mlc' },
+    juggle: { id: 'QhaCnT0gTYw', name: 'How to Juggle a Soccer Ball', creator: '7mlc' },
+    weave:  { id: '8YXsMK-_NGw', name: '10 Ball Mastery Exercises', creator: '7mlc' },
+    taps:   { id: '8YXsMK-_NGw', name: '10 Ball Mastery Exercises', creator: '7mlc' },
+    ladder: { id: 'rSlJU8cO9js', name: 'Fast Feet & Agility Training', creator: '7mlc' },
+    balance:{ id: 'rSlJU8cO9js', name: 'Fast Feet & Agility Training', creator: '7mlc' },
+    shuttle:{ id: '1enUeG0i3Gw', name: 'Full Speed Training Session', creator: '7mlc' },
+    rope:   { id: 'rSlJU8cO9js', name: 'Fast Feet & Agility Training', creator: '7mlc' },
+    skill:  { id: 'YjoV7UH_0ZM', name: 'Every 1v1 Move: Beginner to Advanced', creator: 'AllAttack' },
+    finish: { id: 'oOhohKfAKBE', name: 'Improve Your Shooting Accuracy', creator: '7mlc' }
+  };
+  var AREA_VIDEO = { warm: 'ladder', touch: 'wall', dribble: 'weave', control: 'taps', feet: 'ladder', balance: 'balance', strong: 'shuttle', engine: 'shuttle', finish: 'finish' };
+  var drillById = {}; DRILLS.forEach(function (d) { drillById[d.id] = d; });
+  return { BENCH: BENCH, TESTS: TESTS, test: byId, AREAS: AREAS, DRILLS: DRILLS, drill: drillById, VIDEO: VIDEO, AREA_VIDEO: AREA_VIDEO, MISSIONS: MISSIONS, RANKS: RANKS, BADGES: BADGES };
+})();
+
+/* local-challenges */
+/* Version 4: camera-verifiable athletic challenges. The original soccer drills and
+   their professional video lessons remain in the Training area. These are NOT
+   measurements of football passing, shooting or juggling proficiency. */
+(function () {
+  'use strict';
+  var definitions = {
+    wall: { name:'First Touch • Split Steps',mode:'apart',secs:30,unit:'clean split steps',targets:[6,7,8,9,10,11,12,13,14,15],gear:'Clear floor',count:'Stand facing the camera. Jump or step both feet apart, then bring them together for one repetition.',rules:['For 30 seconds, go from feet together to feet wide and back together. Keep your upper body upright. A complete apart-and-together movement earns one rep.'],points:['Stand far enough back for both feet to be visible','Use soft, controlled landings','Keep your chest upright'], note:'A pass-ready footwork substitute — it does not measure wall passes.' },
+    juggle: {name:'Ball Control • Knee Drives',mode:'knee',secs:30,unit:'alternating knee drives',targets:[10,12,14,16,18,20,22,24,26,28],gear:'Clear floor',count:'Alternate lifting your knees towards your hips. Each fully lowered, visible knee drive counts.',rules:['For 30 seconds, lift one knee toward hip height, lower it, then switch sides. Keep the whole body visible.'],points:['Stand tall','Drive the knee upward before lowering','Keep a steady alternating rhythm'],note:'A balance and coordination substitute — it does not count actual juggles.'},
+    weave: {name:'Dribble Prep • Side Shuffles',mode:'lateral',secs:30,unit:'side crossings',targets:[4,4,5,5,6,6,7,7,8,8],gear:'3 metres clear floor',count:'Start in the middle of the frame. Shuffle left and right far enough for your hips to move from one marked side to the other.',rules:['For 30 seconds, move laterally between the left and right sides of the camera view. Both feet must stay visible. Stay centered enough to remain in frame.'],points:['Keep your knees bent','Stay in camera frame throughout','Change direction under control'],note:'Measures side-to-side movement; ball control and cones are not assessed.'},
+    taps: {name:'Quick Feet • Fast Marches',mode:'fastknee',secs:30,unit:'fast foot lifts',targets:[16,18,20,22,24,26,28,30,32,34],gear:'Clear floor',count:'Make quick alternating foot lifts. The camera counts visible full lifts and returns.',rules:['For 30 seconds, rapidly march in place, lifting each foot clearly from the ground and setting it down. Do not move out of frame.'],points:['Lift feet clearly','Keep an even rhythm','Stay tall and light'],note:'A quick-feet substitute — does not certify toe taps on a soccer ball.'},
+    ladder:{name:'Ladder Prep • In-Out Feet',mode:'apart',secs:30,unit:'in-out cycles',targets:[8,9,10,11,12,13,14,15,16,17],gear:'Clear floor',count:'From feet together, step or jump wide, then return feet together. One complete cycle counts.',rules:['For 30 seconds, open both feet wider than your shoulders and return them together. Keep your full legs on camera.'],points:['Keep the rhythm smooth','Land softly','Avoid excessive leaning'],note:'Measures in-out footwork, not accuracy through a physical ladder.'},
+    balance:{name:'Balance • One-Leg Hold',mode:'balance',secs:20,unit:'steady seconds',targets:[8,9,10,11,12,13,14,15,16,17],gear:'Clear floor near a wall',count:'Hold one foot off the ground, with the standing leg straight or slightly bent. The longest verified steady hold counts.',rules:['For 20 seconds, stand on either leg and hold the other foot off the floor. Keep both ankles visible. Stand near a wall for safety.'],points:['Stay upright','Keep the raised foot clearly off the ground','Try to avoid swaying'],note:'Camera can estimate hold time; it cannot determine whether an unseen object gives support.'},
+    shuttle:{name:'Engine • Lateral Shuttles',mode:'lateral',secs:45,unit:'side crossings',targets:[6,7,8,9,10,11,12,13,14,15],gear:'Clear 3-metre area',count:'Move sideways between both sides of the frame. Each verified change from one marked side to the other counts.',rules:['For 45 seconds, shuttle left and right. Keep your entire body visible. The camera counts crossings between its left and right lanes.'],points:['Stay low at the turns','Move sideways without losing balance','Keep your whole body visible'],note:'A short lateral shuttle test; not the original four-minute long-distance run.'},
+    rope:{name:'Rhythm • Two-Foot Hops',mode:'jump',secs:30,unit:'verified hops',targets:[8,9,10,11,12,13,14,15,16,17],gear:'Clear floor',count:'Hop off the floor and land with both feet; each full rise-and-return is a repetition.',rules:['For 30 seconds, perform small two-foot hops in place. Keep both feet clearly visible in the recording. You do not need a rope.'],points:['Land with soft knees','Keep both feet together','Use consistent rhythm'],note:'Measures two-foot hops, not whether a rope cleared your feet.'},
+    skill:{name:'1v1 Prep • Power Squats',mode:'squat',secs:30,unit:'controlled squats',targets:[5,6,7,8,9,10,11,12,13,14],gear:'Clear floor',count:'Bend your knees and hips into a partial squat, then stand fully upright. The camera counts each complete cycle.',rules:['For 30 seconds, perform controlled squats. Face 30 degrees to the camera if possible. Bend until your knees reach a clear angle, then stand tall.'],points:['Keep your back relatively tall','Bend knees in a controlled way','Straighten up between squats'],note:'A leg-strength and feint-preparation test; the AI does not judge the soccer move.'},
+    finish:{name:'Shooting Prep • Knee Drives',mode:'knee',secs:30,unit:'power knee drives',targets:[12,14,16,18,20,22,24,26,28,30],gear:'Clear floor',count:'Lift either knee toward the hip and return the foot to the floor. Both legs should be visible.',rules:['For 30 seconds, lift one knee at a time towards hip height and bring the foot back down. Keep the body upright and visible.'],points:['Stay balanced','Make each drive distinct','Return the foot fully between efforts'],note:'A body-control drill. Accuracy, shot power and actual ball strikes are NOT scored.'}
+  };
+  window.AC.TESTS.forEach(function(t){
+    var d=definitions[t.id];if(!d)return;
+    t.soccerOriginal={name:t.name, rules:t.rules.slice(),gear:t.gear, count:t.count,targets:t.targets.slice()};
+    Object.keys(d).forEach(function(k){t[k]=d[k];});
+    delete t.low;
+    t.local=true;
+    t.dia='ball';
+  });
+  window.FTA_LOCAL_CHALLENGES = definitions;
+})();
+
+/* xp */
+/* First Team Academy: free, repeat-safe XP and benchmark reward rules */
+(function (root) {
+  'use strict';
+  var TRAINING_REQUIRED = 500;   // About ten complete seven-drill sessions.
+  var SESSION_DRILLS = 7;     // A standard daily session has seven drills.
+  var BASE_SESSION_XP = 50;   // Completing seven distinct drills in a day earns 50 XP.
+  var DAILY_TRAINING_CAP = 70; // Ten distinct drills in a day reach the cap.
+  var TEST_PASS_XP = 100;       // Only first certification of each test at each level.
+  var BENCH_REWARD_XP = 5000;   // One automatic bonus per fully earned benchmark.
+
+  function pointsForDailyDrills(count) {
+    return Math.min(DAILY_TRAINING_CAP, Math.round(Math.max(0, Math.floor(Number(count) || 0)) * BASE_SESSION_XP / SESSION_DRILLS));
+  }
+  function trainingFor(p, n) {
+    return Math.max(0, Math.floor(Number((p.trainingByBench || {})[n]) || 0));
+  }
+  function certifiedBench(p, tests) {
+    var raw = 10;
+    tests.forEach(function (t) { raw = Math.min(raw, Math.max(0, Math.floor(Number((p.tests[t.id] || {}).lvl) || 0))); });
+    return Math.max(0, Math.min(10, raw));
+  }
+  function earnedBench(p, tests) {
+    var raw = certifiedBench(p, tests), earned = 0;
+    for (var n = 1; n <= raw; n++) {
+      if (trainingFor(p, n) < TRAINING_REQUIRED) break;
+      earned = n;
+    }
+    return earned;
+  }
+  // Timed drills are staged, NOT credited. Only a verified session recording
+  // can turn them into training XP. Pending drills survive page refreshes.
+  function stageTraining(p,n,id,date,workSeconds){
+    n=Math.max(1,Math.min(10,Math.floor(Number(n)||1)));
+    if(!id||!/^[a-z0-9]+$/i.test(id)||!/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/.test(date))return {ok:false,reason:'Invalid drill or date.'};
+    var old=(p.trainingSessions||[]).filter(function(s){return s.date===date;}).some(function(s){return (s.ids||[]).indexOf(id)>=0;});
+    if(old||(p.today&&p.today.date===date&&(p.today.ids||[]).indexOf(id)>=0))return {ok:false,reason:'This drill already earned XP today.'};
+    if(!p.pendingTraining)p.pendingTraining={date:date,bench:n,drills:[]};
+    var q=p.pendingTraining;
+    if(q.date!==date||q.bench!==n)return {ok:false,reason:'Submit or discard your earlier session video before starting another session.'};
+    if(q.drills.some(function(x){return x.id===id;}))return {ok:false,reason:'This drill is already awaiting video verification.'};
+    q.drills.push({id:id,workSeconds:Math.max(10,Math.floor(Number(workSeconds)||60))});
+    return {ok:true,pending:q.drills.length,expectedSeconds:expectedVideoSeconds(q)};
+  }
+  function expectedVideoSeconds(q){
+    return (q&&q.drills||[]).reduce(function(s,x){return s+Math.max(10,Math.floor(Number(x.workSeconds)||60));},0);
+  }
+  function pendingSummary(p){
+    var q=p.pendingTraining;
+    return q&&Array.isArray(q.drills)&&q.drills.length ? {
+      date:q.date,bench:q.bench,ids:q.drills.map(function(d){return d.id;}),
+      count:q.drills.length,minimumSeconds:expectedVideoSeconds(q)
+    }:null;
+  }
+  function submitTrainingVideo(p,proof){
+    var q=pendingSummary(p);
+    if(!q)return {accepted:false,xp:0,reason:'Finish at least one timed drill first.'};
+    if(!proof||proof.status!=='verified'||proof.method!=='local-pose-session'||!proof.hash||
+       !Number.isFinite(proof.duration)||proof.duration+2<q.minimumSeconds||
+       !Number.isFinite(proof.coverage)||proof.coverage<58||
+       !Number.isFinite(proof.activity)||proof.activity<20){
+      return {accepted:false,xp:0,reason:'A complete, independently verified session recording is required.'};
+    }
+    p.videoProofs=Array.isArray(p.videoProofs)?p.videoProofs:[];
+    if(p.videoProofs.some(function(x){return x.hash===proof.hash;}))return {accepted:false,xp:0,reason:'This video was already submitted. Record the new session.'};
+    p.trainingSessions=Array.isArray(p.trainingSessions)?p.trainingSessions:[];
+    var old=p.trainingSessions.filter(function(x){return x.date===q.date;});
+    var credited=[];old.forEach(function(x){(x.ids||[]).forEach(function(id){if(credited.indexOf(id)<0)credited.push(id);});});
+    if(p.today&&p.today.date===q.date)(p.today.ids||[]).forEach(function(id){if(credited.indexOf(id)<0)credited.push(id);});
+    var fresh=q.ids.filter(function(id){return credited.indexOf(id)<0;});
+    var before=pointsForDailyDrills(credited.length),after=pointsForDailyDrills(credited.length+fresh.length),xp=Math.max(0,after-before);
+    p.xp=(p.xp||0)+xp;p.drills=(p.drills||0)+fresh.length;
+    p.trainingByBench=p.trainingByBench||{};
+    p.trainingByBench[q.bench]=trainingFor(p,q.bench)+xp;
+    var now=Date.now();
+    p.trainingSessions.unshift({date:q.date,bench:q.bench,ids:fresh,xp:xp,
+      verified:true,method:'local-pose-session',duration:Math.round(proof.duration),
+      coverage:Math.round(proof.coverage),activity:Math.round(proof.activity),submittedAt:now});
+    if(p.trainingSessions.length>365)p.trainingSessions.length=365;
+    p.videoProofs.push({hash:proof.hash,date:q.date,bench:q.bench,submittedAt:now});
+    if(p.videoProofs.length>500)p.videoProofs.splice(0,p.videoProofs.length-500);
+    if(p.today&&p.today.date===q.date){
+      p.today.ids=credited.concat(fresh);
+      p.today.trainingXp=pointsForDailyDrills(p.today.ids.length);
+    }
+    p.pendingTraining=null;
+    return {accepted:true,xp:xp,drills:fresh.length,dayXp:after,bench:q.bench,date:q.date};
+  }
+  // Parent-only manual review for a video that the local pose model cannot assess.
+  // Maintains the same day-level XP cap and proof-reuse checks as automatic credit.
+  function parentReviewPreview(p,req){
+    if(!req||!/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/.test(req.date||'')||
+       !Number.isInteger(req.bench)||req.bench<1||req.bench>10||
+       !/^[a-f0-9]{64}$/i.test(req.hash||'')||
+       typeof req.reason!=='string'||req.reason.trim().length<8||
+       !Number.isInteger(req.count)||req.count<1||req.count>10)
+      return {ok:false,reason:'Choose a dated recording, 1–10 drills, a benchmark, and a reason (at least 8 characters).'};
+    p.videoProofs=Array.isArray(p.videoProofs)?p.videoProofs:[];
+    if(p.videoProofs.some(function(x){return x.hash===req.hash;}))
+      return {ok:false,reason:'This exact video has already earned training credit. No second award is allowed.'};
+    var q=pendingSummary(p), usePending=!!req.usePending;
+    if(usePending&&(!q||q.date!==req.date||q.bench!==req.bench||q.count!==req.count))
+      return {ok:false,reason:'The pending training session has changed. Reopen the parent area.'};
+    var credited=[];
+    (p.trainingSessions||[]).forEach(function(x){if(x.date===req.date)(x.ids||[]).forEach(function(id){if(credited.indexOf(id)<0)credited.push(id);});});
+    if(p.today&&p.today.date===req.date)(p.today.ids||[]).forEach(function(id){if(credited.indexOf(id)<0)credited.push(id);});
+    var ids=usePending?q.ids.filter(function(id){return credited.indexOf(id)<0;}):[];
+    if(!usePending){
+      for(var i=0;i<req.count;i++)ids.push('parent-'+req.hash.slice(0,12)+'-'+i);
+    }
+    var room=Math.max(0,10-credited.length);
+    ids=ids.slice(0,room);
+    var before=pointsForDailyDrills(credited.length),after=pointsForDailyDrills(credited.length+ids.length);
+    var xp=Math.max(0,after-before);
+    if(!ids.length||!xp)return {ok:false,reason:'The daily training XP limit is already reached or these drills were already credited.'};
+    return {ok:true,xp:xp,ids:ids,dayXp:after,count:ids.length,bench:req.bench,date:req.date,usePending:usePending};
+  }
+  function parentReviewVideo(p,req){
+    var preview=parentReviewPreview(p,req);
+    if(!preview.ok)return preview;
+    var now=Date.now();
+    p.trainingByBench=p.trainingByBench||{};
+    p.trainingByBench[preview.bench]=trainingFor(p,preview.bench)+preview.xp;
+    p.xp=(p.xp||0)+preview.xp;
+    p.drills=(p.drills||0)+preview.ids.length;
+    p.trainingSessions=Array.isArray(p.trainingSessions)?p.trainingSessions:[];
+    p.trainingSessions.unshift({date:preview.date,bench:preview.bench,ids:preview.ids.slice(),xp:preview.xp,
+      verified:true,method:'parent-video-review',duration:Math.max(0,Math.round(Number(req.duration)||0)),
+      note:req.reason.trim().slice(0,200),submittedAt:now});
+    if(p.trainingSessions.length>365)p.trainingSessions.length=365;
+    p.videoProofs.push({hash:req.hash,date:preview.date,bench:preview.bench,submittedAt:now,method:'parent-video-review'});
+    if(p.videoProofs.length>500)p.videoProofs.splice(0,p.videoProofs.length-500);
+    if(p.today&&p.today.date===preview.date){
+      var old=p.today.ids||[];preview.ids.forEach(function(id){if(old.indexOf(id)<0)old.push(id);});
+      p.today.ids=old;p.today.trainingXp=pointsForDailyDrills(old.length);
+    }
+    p.days=Array.isArray(p.days)?p.days:[];
+    if(p.days.indexOf(preview.date)<0)p.days.push(preview.date);
+    if(preview.usePending)p.pendingTraining=null;
+    p.adminAudit=Array.isArray(p.adminAudit)?p.adminAudit:[];
+    p.adminAudit.unshift({id:'parent-video-'+now,date:preview.date,at:now,type:'video',bench:preview.bench,
+      count:preview.ids.length,xp:preview.xp,reason:req.reason.trim().slice(0,200),
+      fileName:String(req.fileName||'').slice(0,120),hashPrefix:req.hash.slice(0,12)});
+    if(p.adminAudit.length>250)p.adminAudit.length=250;
+    return preview;
+  }
+  // General-purpose parent correction never counts toward 500 verified training XP.
+  function parentAdjustGeneralXP(p,amount,reason){
+    amount=Number(amount);
+    if(!Number.isInteger(amount)||amount===0||Math.abs(amount)>1000||
+       typeof reason!=='string'||reason.trim().length<8)
+      return {ok:false,reason:'Enter an adjustment from -1000 to +1000 XP and a reason of at least 8 characters.'};
+    if((p.xp||0)+amount<0)return {ok:false,reason:'Cannot subtract more XP than the current total.'};
+    p.xp=(p.xp||0)+amount;
+    p.adminAudit=Array.isArray(p.adminAudit)?p.adminAudit:[];
+    p.adminAudit.unshift({id:'parent-xp-'+Date.now(),at:Date.now(),type:'general',xp:amount,
+      reason:reason.trim().slice(0,200)});
+    if(p.adminAudit.length>250)p.adminAudit.length=250;
+    return {ok:true,xp:amount};
+  }
+  function awardBenchmarkBonuses(p, tests) {
+    var upTo = earnedBench(p, tests), gained = [], total = 0;
+    p.bonusAwards = p.bonusAwards || {};
+    for (var b = 1; b <= upTo; b++) {
+      if (p.bonusAwards[b]) continue;
+      p.bonusAwards[b] = Date.now(); // Mark before modifying XP so repeat calls are harmless.
+      gained.push(b); total += BENCH_REWARD_XP;
+    }
+    p.xp = (p.xp || 0) + total;
+    return { gained: gained, xp: total, bench: upTo };
+  }
+  var out = {
+    TRAINING_REQUIRED: TRAINING_REQUIRED, SESSION_DRILLS: SESSION_DRILLS,
+    BASE_SESSION_XP: BASE_SESSION_XP, pointsForDailyDrills: pointsForDailyDrills,
+    DAILY_TRAINING_CAP: DAILY_TRAINING_CAP, TEST_PASS_XP: TEST_PASS_XP,
+    BENCH_REWARD_XP: BENCH_REWARD_XP, trainingFor: trainingFor,
+    certifiedBench: certifiedBench, earnedBench: earnedBench,
+    stageTraining: stageTraining, pendingSummary: pendingSummary, expectedVideoSeconds: expectedVideoSeconds,
+    submitTrainingVideo: submitTrainingVideo, parentReviewPreview: parentReviewPreview,
+    parentReviewVideo: parentReviewVideo, parentAdjustGeneralXP: parentAdjustGeneralXP,
+    awardBenchmarkBonuses: awardBenchmarkBonuses
+  };
+  root.FTAXP = out;
+  if (typeof module === 'object' && module.exports) module.exports = out;
+})(typeof window === 'object' ? window : globalThis);
+
+/* core */
+/* First Team Academy: state, saving, shared helpers */
+(function () {
+  'use strict';
+  var A = window.AC, X = window.FTAXP;
+  ['w1', 'w2', 'w3', 'f1', 'f4', 'b1', 's3'].forEach(function (id) { A.drill[id].seq = 1; });
+  var $ = function (id) { return document.getElementById(id); };
+  var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
+
+  /* ---------- dates ---------- */
+  function ymd(d) { d = d || new Date(); return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2); }
+  function monday(d) { d = new Date(d || Date.now()); d.setHours(12, 0, 0, 0); d.setDate(d.getDate() - ((d.getDay() + 6) % 7)); return d; }
+  function dayNumber() { var d = new Date(); return Math.floor((d.getTime() - d.getTimezoneOffset() * 60000) / 864e5); }
+
+  /* ---------- defaults ---------- */
+  function defProgress() {
+    var t = {}; A.TESTS.forEach(function (x) { t[x.id] = { lvl: 0, pb: null, pbTier: -1 }; });
+    return { v: 6, xp: 0, tests: t, days: [], drills: 0, today: { date: '', ids: [], bonus: false, trainingXp: 0 }, trainingByBench: {}, trainingSessions: [], pendingTraining: null, videoProofs: [], bonusAwards: {}, log: [], missions: {}, badges: {}, coachChecks: 0, bestWeeks: 0, updated: 0 };
+  }
+  function defConfig() {
+    return {
+      v: 1, name: 'Benjamin', sound: true, targets: {}, updated: 0,
+      rewards: A.BENCH.map(function (b) { return { id: 'b' + b.n, icon: '🎁', title: 'Mystery reward', note: 'A parent will reveal this one.', trig: 'bench', n: b.n, given: 0 }; })
+    };
+  }
+  function fill(obj, def) {
+    obj = obj && typeof obj === 'object' ? obj : {};
+    Object.keys(def).forEach(function (k) { if (obj[k] === undefined || obj[k] === null) obj[k] = def[k]; });
+    return obj;
+  }
+  function fixProgress(p) {
+    p = fill(p, defProgress()); var d = defProgress();
+    A.TESTS.forEach(function (x) { p.tests[x.id] = fill(p.tests[x.id], d.tests[x.id]); });
+    // The old app counted results without a 90/100 certification gate.
+    // Keep those old levels in a historical record but start new, certified levels at zero.
+    if ((p.v || 1) < 2) {
+      p.legacyLevels = {};
+      A.TESTS.forEach(function (x) { p.legacyLevels[x.id] = p.tests[x.id].lvl || 0; p.tests[x.id].lvl = 0; });
+      Object.keys(p.badges || {}).forEach(function (id) { if (/^b\d+$/.test(id)) delete p.badges[id]; });
+      p.v = 2;
+    }
+    if ((p.v || 1) < 3) {
+      p.beforeAILevels = {};
+      A.TESTS.forEach(function (x) { p.beforeAILevels[x.id] = p.tests[x.id].lvl || 0; p.tests[x.id].lvl = 0; });
+      Object.keys(p.badges || {}).forEach(function (id) { if (/^b\d+$/.test(id)) delete p.badges[id]; });
+      p.v = 3;
+    }
+    if ((p.v || 1) < 4) {
+      // v4 challenges measure camera-visible body movements, not the original
+      // soccer-ball skills; prior certifications MUST NOT carry over.
+      p.beforeLocalLevels = {};
+      A.TESTS.forEach(function (x) {
+        p.beforeLocalLevels[x.id] = p.tests[x.id].lvl || 0;
+        p.tests[x.id].lvl = 0;
+        p.tests[x.id].pb = null;
+        p.tests[x.id].pbTier = -1;
+      });
+      Object.keys(p.badges || {}).forEach(function (id) { if (/^b\d+$/.test(id)) delete p.badges[id]; });
+      p.v = 4;
+    }
+    if ((p.v || 1) < 5) {
+      // Respect progress already certified in V4 without charging training XP
+      // retroactively. Grandfather old completed rewards, but no surprise +5000
+      // backpay for historical benchmarks. New benchmarks use both gates.
+      p.trainingByBench = p.trainingByBench || {};
+      p.bonusAwards = p.bonusAwards || {};
+      var completed = X.certifiedBench(p, A.TESTS);
+      for (var b = 1; b <= completed; b++) {
+        p.trainingByBench[b] = Math.max(X.TRAINING_REQUIRED, X.trainingFor(p, b));
+        p.bonusAwards[b] = p.bonusAwards[b] || 'grandfathered';
+      }
+      p.v = 5;
+    }
+    if ((p.v || 1) < 6) {
+      // Training XP already credited in V5 is preserved; new drills require
+      // a completed timer AND an independently verified on-device video.
+      p.pendingTraining = null;
+      p.videoProofs = [];
+      p.v = 6;
+    }
+    p.pendingTraining = p.pendingTraining && Array.isArray(p.pendingTraining.drills) ? p.pendingTraining : null;
+    p.videoProofs = Array.isArray(p.videoProofs) ? p.videoProofs : [];
+    p.trainingByBench = p.trainingByBench || {};
+    p.trainingSessions = Array.isArray(p.trainingSessions) ? p.trainingSessions : [];
+    p.bonusAwards = p.bonusAwards || {};
+    p.adminAudit = Array.isArray(p.adminAudit) ? p.adminAudit : [];
+    p.today = fill(p.today, d.today);
+    if (!Array.isArray(p.today.ids)) p.today.ids = [];
+    return p;
+  }
+
+  /* ---------- local save; Claude storage only if opened inside Claude ---------- */
+  var KP = 'academy/progress', KC = 'academy/config', db = null, timers = {}, busy = {}, again = {}, cloudState = 'local';
+  function lget(k) { try { var v = localStorage.getItem('fta:' + k); return v ? JSON.parse(v) : null; } catch (e) { return null; } }
+  function lset(k, v) { try { localStorage.setItem('fta:' + k, JSON.stringify(v)); } catch (e) { } }
+  var S = { progress: fixProgress(lget(KP)), config: fill(lget(KC), defConfig()) };
+  S.config.rewards.forEach(function (r) { if (r.trig !== 'bench') { r.trig = 'bench'; r.n = Math.max(1, Math.min(10, Math.round(+r.n) || 1)); } });
+  lset(KP, S.progress); lset(KC, S.config); // Persist one-time migration to the 90-point certification rules.
+  function docOf(k) { return k === KP ? S.progress : S.config; }
+  function push(k) {
+    if (!db) return;
+    if (busy[k]) { again[k] = 1; return; }
+    busy[k] = 1;
+    db.doc(k).set(JSON.parse(JSON.stringify(docOf(k)))).then(function () { cloudState = 'cloud'; }, function () { cloudState = 'error'; })
+      .then(function () { busy[k] = 0; if (again[k]) { again[k] = 0; push(k); } });
+  }
+  function save(k) { var o = docOf(k); o.updated = Date.now(); lset(k, o); clearTimeout(timers[k]); timers[k] = setTimeout(function () { push(k); }, 600); }
+  function pull() {
+    if (!db) return Promise.resolve(false);
+    var changed = false;
+    return Promise.all([KP, KC].map(function (k) {
+      return Promise.race([db.doc(k).get(), new Promise(function (_, r) { setTimeout(r, 9000); })]).then(function (snap) {
+        var remote = snap.exists ? snap.data() : null, local = docOf(k);
+        if (remote && (remote.updated || 0) > (local.updated || 0)) {
+          remote = JSON.parse(JSON.stringify(remote));
+          if (k === KP) S.progress = fixProgress(remote); else S.config = fill(remote, defConfig());
+          lset(k, docOf(k)); changed = true;
+        } else if ((local.updated || 0) > ((remote && remote.updated) || 0)) push(k);
+        cloudState = 'cloud';
+      }, function () { cloudState = 'error'; });
+    })).then(function () { return changed; });
+  }
+  var ready = (window.claude && window.claude.use ? window.claude.use('db') : Promise.resolve(null)).then(function (d) { db = d || null; return db; }, function () { return null; });
+
+  /* ---------- game maths ---------- */
+  function target(id, lvl) { return A.test[id].targets[lvl - 1]; } // Camera-challenge targets; no external grader or server
+  function meets(t, score, tg) { return t.low ? score <= tg : score >= tg; }
+  function fmt(t, v) { return v == null ? '-' : t.low ? (+v).toFixed(1) : String(Math.round(v * 10) / 10); }
+  function derived() {
+    var P = S.progress, lv = A.TESTS.map(function (t) { return P.tests[t.id].lvl; });
+    var certifiedBench = X.certifiedBench(P, A.TESTS), bench = X.earnedBench(P, A.TESTS), passes = lv.reduce(function (a, b) { return a + b; }, 0);
+    var counts = {}; P.days.forEach(function (d) { var k = ymd(monday(new Date(d + 'T12:00:00'))); counts[k] = (counts[k] || 0) + 1; });
+    var m = monday(), week = counts[ymd(m)] || 0, streak = week >= 4 ? 1 : 0, k = new Date(m);
+    for (; ;) { k.setDate(k.getDate() - 7); if ((counts[ymd(k)] || 0) >= 4) streak++; else break; }
+    var rank = 0; A.RANKS.forEach(function (r, i) { if (P.xp >= r[0]) rank = i; });
+    var nextXp = A.RANKS[rank + 1] ? A.RANKS[rank + 1][0] : null;
+    var weekDays = []; for (var i = 0; i < 7; i++) { var dd = new Date(m); dd.setDate(m.getDate() + i); weekDays.push({ d: ymd(dd), on: P.days.indexOf(ymd(dd)) >= 0 }); }
+    function lvOf(id) { return P.tests[id].lvl; }
+    var attr = {
+      TOUCH: lvOf('wall'), CONTROL: (lvOf('juggle') + lvOf('taps')) / 2, DRIBBLE: (lvOf('weave') + lvOf('skill')) / 2,
+      FEET: (lvOf('ladder') + lvOf('rope')) / 2, BALANCE: lvOf('balance'), ENGINE: (lvOf('shuttle') + lvOf('rope')) / 2, FINISH: lvOf('finish')
+    };
+    var sum = 0, n = 0; Object.keys(attr).forEach(function (a) { attr[a] = Math.round(42 + attr[a] * 5.6); sum += attr[a]; n++; });
+    return { bench: bench, certifiedBench: certifiedBench, cur: Math.min(10, bench + 1), trainingXp: X.trainingFor(P, Math.min(10, bench + 1)), requiredTrainingXp: X.TRAINING_REQUIRED, passes: passes, week: week, weekStreak: streak, weekDays: weekDays, rank: rank, rankName: A.RANKS[rank][1], rankFrom: A.RANKS[rank][0], nextXp: nextXp, attr: attr, ovr: Math.round(sum / n) };
+  }
+  function isReady(r, d) {
+    var P = S.progress;
+    // Both the current camera certifications AND benchmark-specific training XP are mandatory.
+    return r.trig === 'bench' && d.bench >= r.n;
+  }
+  function trigText(r) {
+    var n = r.n;
+    if (r.trig === 'bench') { var b = A.BENCH[n - 1]; return 'Pass all 10 camera tests (90+/100) and earn ' + X.TRAINING_REQUIRED + ' training XP in Benchmark ' + n + (b ? ' (' + b.age + ' ' + b.name + ')' : '') + '. Bonus: +' + X.BENCH_REWARD_XP.toLocaleString('en-US') + ' XP.'; }
+    return 'Finish a certified benchmark (90/100 minimum on every test)';
+  }
+
+  window.FTA = {
+    A: A, $: $, esc: esc, S: S, KP: KP, KC: KC, save: save, pull: pull, ready: ready, cloud: function () { return cloudState; },
+    ymd: ymd, dayNumber: dayNumber, target: target, meets: meets, fmt: fmt, derived: derived, isReady: isReady, trigText: trigText,
+    defProgress: defProgress, defConfig: defConfig, fixProgress: fixProgress, XP: X
+  };
+})();
+
+/* ui */
+/* First Team Academy: screens, training sessions, drill timer */
+(function () {
+  'use strict';
+  var F = window.FTA, A = F.A, X = F.XP, $ = F.$, esc = F.esc, S = F.S;
+  var tab = 'home', viewBench = 0, filter = 'all', sheetClose = null;
+
+  /* ---------- small helpers ---------- */
+  function toast(m) { var t = $('toast'); t.textContent = m; t.classList.add('on'); clearTimeout(toast.t); toast.t = setTimeout(function () { t.classList.remove('on'); }, 2200); }
+  function party() {
+    var p = $('party'), cols = ['#c8102e', '#f5b82e', '#00a79d', '#ffffff', '#1a1c22'];
+    for (var i = 0; i < 60; i++) { var c = document.createElement('i'); c.style.left = Math.random() * 100 + '%'; c.style.background = cols[i % 5]; c.style.animationDelay = Math.random() * 0.6 + 's'; p.appendChild(c); }
+    setTimeout(function () { p.innerHTML = ''; }, 2700);
+  }
+  function ask(o) {
+    return new Promise(function (res) {
+      var d = $('dlg');
+      d.innerHTML = '<h3>' + esc(o.title) + '</h3>' + (o.html || (o.text ? '<p class="soft">' + esc(o.text) + '</p>' : '')) +
+        (o.input ? '<input id="dlg-in" type="' + (o.input.type || 'text') + '" placeholder="' + esc(o.input.ph || '') + '" autocomplete="off" autocapitalize="characters">' : '');
+      o.buttons.forEach(function (b) {
+        var bt = document.createElement('button'); bt.className = 'btn wide ' + (b.kind || 'ghost'); bt.textContent = b.label;
+        bt.onclick = function () { var v = $('dlg-in') ? $('dlg-in').value : ''; $('veil').classList.remove('on'); res({ v: b.v, text: v }); };
+        d.appendChild(bt);
+      });
+      $('veil').classList.add('on');
+      if ($('dlg-in')) setTimeout(function () { try { $('dlg-in').focus(); } catch (e) { } }, 50);
+    });
+  }
+  var ac = null;
+  function beep(f, dur) {
+    if (!S.config.sound) return;
+    try {
+      ac = ac || new (window.AudioContext || window.webkitAudioContext)(); if (ac.state === 'suspended') ac.resume();
+      var o = ac.createOscillator(), g = ac.createGain(); o.frequency.value = f; o.connect(g); g.connect(ac.destination);
+      g.gain.setValueAtTime(0.25, ac.currentTime); g.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + (dur || 0.2)); o.start(); o.stop(ac.currentTime + (dur || 0.2));
+    } catch (e) { }
+  }
+  function openSheet(title, html, onClose) { $('sh-title').textContent = title; $('sh-body').innerHTML = html; $('sheet').classList.add('on'); $('sheet').querySelector('.body').scrollTop = 0; sheetClose = onClose || null; }
+  function closeSheet() { $('sheet').classList.remove('on'); var c = sheetClose; sheetClose = null; if (c) c(); $('sh-body').innerHTML = ''; }
+
+  /* ---------- progress changes ---------- */
+  function readyIds(d) { return S.config.rewards.filter(function (r) { return !r.given && F.isReady(r, d); }).map(function (r) { return r.id; }); }
+  function snapshot() { var d = F.derived(); return { ready: readyIds(d), rank: d.rank, bench: d.bench }; }
+  function touchDay() { var P = S.progress, t = F.ymd(); if (P.days.indexOf(t) < 0) P.days.push(t); var d = F.derived(); if (d.weekStreak > P.bestWeeks) P.bestWeeks = d.weekStreak; }
+  function settle(snap, quiet) {
+    var P = S.progress, d = F.derived(), fresh = [];
+    A.BADGES.forEach(function (b) { if (!P.badges[b[0]] && b[2](P, d)) { P.badges[b[0]] = Date.now(); fresh.push(b[1]); } });
+    F.save(F.KP); render();
+    if (quiet) return;
+    var won = readyIds(d).filter(function (id) { return snap.ready.indexOf(id) < 0; });
+    if (won.length) {
+      var r = S.config.rewards.filter(function (x) { return x.id === won[0]; })[0]; party(); beep(660, 0.15); setTimeout(function () { beep(990, 0.3); }, 160);
+      ask({ title: 'Reward unlocked! +5,000 XP', html: '<div class="rw ready"><div class="em">' + esc(r.icon) + '</div><div><b>' + esc(r.title) + '</b><span class="soft small">' + esc(F.trigText(r)) + '</span></div></div><p class="soft">You earned 5,000 bonus XP! Show a parent to receive your family reward.</p>', buttons: [{ label: 'Yes!', kind: 'gold', v: 1 }] });
+    } else if (d.rank > snap.rank) { party(); toast('New rank: ' + d.rankName + '!'); }
+    else if (fresh.length) toast('Badge earned: ' + fresh[0]);
+  }
+  // On-device pose assessments ONLY; no self-reported result can certify a level.
+  // Numeric targets remain a separate hard requirement. No skipping levels.
+  function applyResult(id, score, by, grade, certified, technique, feedback) {
+    var snap = snapshot(), P = S.progress, T = A.test[id], ts = P.tests[id], from = ts.lvl,
+      at = Math.min(10, from + 1), v = T.tier(at), tg = F.target(id, at);
+    grade = Math.max(0, Math.min(100, Math.round(Number(grade) || 0)));
+    var qualified = !!certified && by === 'local-pose' && grade >= 90 && F.meets(T, score, tg) && at <= snap.bench + 1; // Cannot advance into an unfinished future benchmark.
+    var lvl = Math.min(10, from + (qualified && from < 10 ? 1 : 0));
+    if (ts.pbTier !== v || ts.pb == null || (T.low ? score < ts.pb : score > ts.pb)) { ts.pb = score; ts.pbTier = v; }
+    ts.lvl = lvl;
+    var e = { t: Date.now(), test: id, at: at, score: score, grade: grade,
+      technique: Math.round(Number(technique) || 0), certified: !!qualified, from: from, to: lvl,
+      by: by || 'video-reviewed', feedback: (feedback || []).slice(0, 3) };
+    P.log.unshift(e); if (P.log.length > 300) P.log.length = 300;
+    // Each newly certified challenge pays 100 XP once; failed/repeated attempts pay zero.
+    // The milestone +5000 XP is separate and requires all 10 tests AND 500 training XP.
+    var testXp = lvl > from ? X.TEST_PASS_XP : 0;
+    e.xpEarned = testXp;
+    P.xp += testXp;
+    if (testXp) touchDay();
+    var bonus = X.awardBenchmarkBonuses(P, A.TESTS);
+    var benchUp = bonus.gained.length > 0;
+    settle(snap, false);
+    return { entry: e, gain: lvl - from, benchUp: benchUp, bench: F.derived().bench, target: tg, xp: testXp + bonus.xp, testXp: testXp, bonusXp: bonus.xp, at: at };
+  }
+
+  /* ---------- today's session ---------- */
+  var ORDER = ['wall', 'weave', 'juggle', 'taps', 'ladder', 'balance', 'shuttle', 'rope', 'skill', 'finish'];
+  function plan() {
+    var n = F.dayNumber(), P = S.progress, by = {};
+    A.DRILLS.forEach(function (d) { (by[d.area] = by[d.area] || []).push(d.id); });
+    var pick = function (a, k) { return by[a][k % by[a].length]; };
+    var ids = [pick('warm', n), pick('touch', n), pick('dribble', n), pick('control', n), n % 2 ? pick('feet', n >> 1) : pick('balance', n >> 1), n % 3 === 2 ? pick('strong', Math.floor(n / 3)) : pick('engine', n), pick('finish', n)];
+    var weak = ORDER.slice().sort(function (a, b) { return P.tests[a].lvl - P.tests[b].lvl; })[0], T = A.test[weak], fd = T.help[n % T.help.length], area = A.drill[fd].area;
+    for (var i = 1; i < ids.length; i++) if (A.drill[ids[i]].area === area) { ids[i] = fd; break; }
+    if (ids.indexOf(fd) < 0) ids[ids.length - 1] = fd;
+    return { ids: ids, focus: T, mins: ids.reduce(function (s, id) { return s + A.drill[id].min; }, 0) };
+  }
+  function todayDone() { var t = S.progress.today; if (t.date !== F.ymd()) { t.date = F.ymd(); t.ids = []; t.trainingXp = 0; t.bonus = false; } return t; }
+  function drillItem(id, i, state) {
+    var d=A.drill[id],done=state==='credited',queued=state==='pending';
+    return '<button class="item' + (done ? ' done' : '') + '" data-drill="'+id+'"><span class="ico">'+(done?'&#10003;':queued?'&#128249;':(i!=null?i+1:d.min+'\''))+'</span><span class="sp"><b>'+esc(d.name)+'</b><span class="meta">'+A.AREAS[d.area]+' &middot; '+d.min+' min &middot; '+esc(d.gear)+'</span></span><span class="go">'+(done?'DONE':queued?'VIDEO':'GO')+'</span></button>';
+  }
+  function drillState(id,td,pending){return td.ids.indexOf(id)>=0?'credited':pending&&pending.date===F.ymd()&&pending.ids.indexOf(id)>=0?'pending':'';}
+  function durationText(seconds){var m=Math.floor(seconds/60),s=Math.round(seconds%60);return m+'m'+(s?' '+s+'s':'');}
+
+  /* ---------- screens ---------- */
+  function ring(frac, label, big) {
+    var c = 2 * Math.PI * 54;
+    return '<div class="ring"><svg viewBox="0 0 132 132"><circle cx="66" cy="66" r="54" fill="none" stroke="rgba(255,255,255,.15)" stroke-width="12"/><circle cx="66" cy="66" r="54" fill="none" stroke="#00a79d" stroke-width="12" stroke-linecap="round" stroke-dasharray="' + (c * frac) + ' ' + c + '" transform="rotate(-90 66 66)"/></svg><div><b>' + big + '</b><span>' + label + '</span></div></div>';
+  }
+  function gateSvg(n, age, name) {
+    return '<div class="bgate"><svg viewBox="0 0 60 54" aria-hidden="true"><path class="g-post" d="M10 48V23m40 25V23"/><path class="g-arch" d="M10 23c5-10 12-15 20-15s15 5 20 15"/><path class="g-crown" d="M16 20v-5m28 5v-5m-24-1h20"/><rect class="g-pill" x="17" y="17" rx="7" ry="7" width="26" height="10"/><text class="g-ynwa" x="30" y="24" text-anchor="middle">YNWA</text><circle cx="30" cy="35" r="10" fill="currentColor" opacity=".18"/><text class="g-num" x="30" y="40" text-anchor="middle">' + n + '</text></svg><span class="g-age">' + esc(age) + '</span><span class="g-name">' + esc(name) + '</span></div>';
+  }
+  function home() {
+    var P = S.progress, d = F.derived(), b = A.BENCH[d.cur - 1], pl = plan(), td = todayDone();
+    var passed = A.TESTS.filter(function (t) { return P.tests[t.id].lvl >= d.cur; }).length, all = d.bench >= 10, pending = X.pendingSummary(P);
+    var doneN = pl.ids.filter(function (id) { return !!drillState(id,td,pending); }).length;
+    var rs = S.config.rewards, rdy = rs.filter(function (r) { return !r.given && F.isReady(r, d); })[0];
+    var nxt = rs.filter(function (r) { return !r.given && !F.isReady(r, d); }).sort(function (x, y) { return (x.trig === 'bench' ? x.n : 99) - (y.trig === 'bench' ? y.n : 99); })[0];
+    var wk = Math.floor(F.dayNumber() / 7), mi = wk % A.MISSIONS.length, mdone = P.missions['w' + wk];
+    var h = '<div class="wrap">';
+    if (!P.days.length && !P.log.length) h += '<div class="card" style="border-color:var(--gold-deep);background:#fff8e3"><h2>How the academy works</h2><ol class="how"><li><b>Train and film.</b> Finish the drill timers, film your session and submit the recording for on-device verification. You earn no training XP until the video passes. Seven drills earn 50 XP, up to 70 per day. Earn 500 verified training XP per benchmark.</li><li><b>Test.</b> Earn 100 XP the first time you pass each camera challenge with at least 90/100 and the numeric target.</li><li><b>Unlock.</b> Pass all 10 challenges and collect 500 training XP for a 5,000 XP benchmark reward and the next level.</li></ol><p class="soft small" style="margin-top:6px">Camera grades estimate physical movements, not soccer-ball technique. Levels are family challenges, not official soccer rankings.</p></div>';
+    h += '<div class="hero">' + ring(all ? 1 : passed / 10, 'of 10 tests', all ? '10' : passed) + '<div><p class="small" style="opacity:.75;letter-spacing:1px;text-transform:uppercase;font-weight:600">' + (all ? 'Every benchmark complete' : 'You are working on') + '</p><h2>Benchmark ' + d.cur + ' &middot; ' + b.age + ' ' + b.name + '</h2>' +
+      '<div class="tests">' + A.TESTS.map(function (t) { return '<i class="' + (P.tests[t.id].lvl >= d.cur ? 'f' : '') + '"></i>'; }).join('') + '</div>' +
+      '<p class="small" style="opacity:.9;margin:0 0 12px">Liverpool colours. Winger energy. Train direct like Rio Ngumoha and attack the box with the confidence of Lamine Yamal.</p>' +
+      '<div class="row" style="flex-wrap:wrap"><button class="btn red big" data-tab="train">' + (doneN ? 'Keep training' : 'Start today\'s session') + '</button><button class="btn ghost" data-tab="tests">Take a test</button></div></div></div>' +
+      '<div class="lfc-note"><h2>Benjamin\'s matchday identity</h2><p class="soft small" style="margin-top:4px">This academy is now tailored to Benjamin: Liverpool FC spirit, Rio Ngumoha directness, and Lamine Yamal creativity.</p><div class="clubline"><span class="clubchip">&#128308; Liverpool FC colours</span><span class="clubchip">&#9917; Favourite player: Rio Ngumoha</span><span class="clubchip">&#11088; Favourite player: Lamine Yamal</span></div></div>';
+    h += '<div class="card" style="border-color:#e9d4a3;background:#fffaf0"><div class="row" style="align-items:center;flex-wrap:wrap"><div class="sp"><h2>Benchmark ' + d.cur + ': earn your reward</h2><p class="soft small" style="margin-top:4px">Shankly Gates-style milestones mark each benchmark on your road forward.</p><p class="soft small" style="margin-top:4px">Both goals required: ' + passed + '/10 camera tests passed at 90+ and ' + d.trainingXp + '/' + X.TRAINING_REQUIRED + ' training XP. +100 XP for each test pass; +5,000 XP when both goals are finished.</p></div><span class="chip gold">' + Math.min(d.trainingXp, X.TRAINING_REQUIRED) + ' / ' + X.TRAINING_REQUIRED + ' training XP</span></div><div class="bar gold" style="margin-top:12px"><i style="width:' + Math.min(100, d.trainingXp / X.TRAINING_REQUIRED * 100) + '%"></i></div>' + (d.certifiedBench >= d.cur && d.trainingXp < X.TRAINING_REQUIRED ? '<p class="chip next" style="margin-top:10px">All 10 tests passed! Keep training for ' + (X.TRAINING_REQUIRED - d.trainingXp) + ' more training XP.</p>' : '') + '</div>';
+    h += '<div class="kpis"><div class="kpi"><b>' + d.week + '<span style="font-size:20px"> / 4</span></b><span>training days this week</span><div class="week">' +
+      d.weekDays.map(function (w, i) { return '<i class="' + (w.on ? 'f' : '') + (w.d === F.ymd() ? ' t' : '') + '">' + 'MTWTFSS'[i] + '</i>'; }).join('') + '</div></div>' +
+      '<div class="kpi"><b>' + P.xp + '</b><span>XP &middot; ' + esc(d.rankName) + '</span><div class="bar gold" style="margin-top:14px"><i style="width:' + (d.nextXp ? Math.min(100, (P.xp - d.rankFrom) / (d.nextXp - d.rankFrom) * 100) : 100) + '%"></i></div><span>' + (d.nextXp ? (d.nextXp - P.xp) + ' XP to ' + A.RANKS[d.rank + 1][1] : 'Top rank') + '</span></div>' +
+      '<button class="kpi" data-tab="rewards" style="text-align:left">' + (rdy ? '<b style="color:var(--gold-deep)">' + esc(rdy.icon) + ' Ready!</b><span>' + esc(rdy.title) + '. Show a parent.</span>' : nxt ? '<b>' + esc(nxt.icon) + '</b><span>Next reward: ' + esc(nxt.title) + '</span><div class="small soft" style="margin-top:4px">' + esc(F.trigText(nxt)) + '</div>' : '<b>&#10003;</b><span>All rewards earned</span>') + '</button></div>';
+    h += '<div class="grid2"><div class="card"><div class="row"><h2>Today\'s session</h2><span class="sp"></span><span class="chip">' + doneN + ' of ' + pl.ids.length + ' done</span></div><p class="soft small" style="margin:4px 0 10px">About ' + pl.mins + ' minutes. Focus: ' + esc(pl.focus.area.toLowerCase()) + '.' + (d.week >= 6 ? ' You have trained 6 days this week. A rest day is training too.' : '') + '</p><div style="display:flex;flex-direction:column;gap:8px">' +
+      pl.ids.slice(0, 3).map(function (id, i) { return drillItem(id, i, drillState(id,td,pending)); }).join('') + '</div><button class="btn ghost wide" style="margin-top:10px" data-tab="train">See all ' + pl.ids.length + ' drills</button></div>';
+    h += '<div class="card"><h2>Watch and learn</h2><p class="soft small" style="margin:4px 0 10px">This week\'s mission. Ask a parent before you search.</p><p style="font-weight:500">' + esc(A.MISSIONS[mi]) + '</p>' +
+      (mdone ? '<p class="chip pass" style="margin-top:12px">Mission complete</p>' : '<button class="btn teal wide" style="margin-top:12px" data-mission="w' + wk + '">I did it (+15 XP)</button>') + '</div></div>';
+    return h + '</div>';
+  }
+  function train() {
+    var pl = plan(), td = todayDone(), pending = X.pendingSummary(S.progress), all = pl.ids.every(function (id) { return !!drillState(id,td,pending); });
+    var h = '<div class="wrap"><div class="sect"><h2>Today\'s session</h2><span class="soft small">' + td.trainingXp + '/' + X.DAILY_TRAINING_CAP + ' verified XP earned today · seven filmed drills = 50 XP</span></div>'; 
+    h += '<div class="card" style="border-color:#c8102e;background:linear-gradient(130deg,#fff8ef,#fde8ec)"><div class="row" style="align-items:center"><div class="sp"><h2>Record a complete training session</h2><p class="soft small" style="margin-top:5px">One tap to start. Your iPad shows your live camera alongside each drill, reads out the instructions, and automatically moves to the next drill. Save the video to your iPad and submit it for XP when finished.</p></div><span class="chip next">NEW</span></div><button id="open-continuous-session" class="btn red big wide" style="margin-top:12px" '+(pending?'disabled':'')+'>📹 Start continuous video training</button>'+(pending?'<p class="soft small" style="margin-top:6px">First submit or discard the session video already awaiting verification.</p>':'<p class="soft small" style="margin-top:6px">Film the full body in landscape. Camera access requires Safari on a secure HTTPS page.</p>')+'</div>';
+    h += '<div class="card" style="background:var(--red-soft);border-color:#f3c3cc"><b>Today\'s focus: ' + esc(pl.focus.area) + '.</b> Your next test to beat is ' + esc(pl.focus.name) + '.</div>';
+    h += '<div style="display:flex;flex-direction:column;gap:8px">' + pl.ids.map(function (id, i) { return drillItem(id, i, drillState(id,td,pending)); }).join('') + '</div>';
+    h += '<div class="card" style="border-color:#e9d4a3;background:#fffaf0"><h2>Submit your training video</h2>'+
+      '<p class="soft small" style="margin-top:7px">The timer only marks a drill as ready for video verification. Training XP is added only after your iPad verifies an actual recording. Record the whole session with all drills in view, then select the video below. Nothing gets uploaded.</p>'+
+      (pending?'<p style="margin-top:12px"><b>'+pending.count+' drill'+(pending.count===1?'':'s')+' awaiting video</b> · workout date '+esc(pending.date)+' · Benchmark '+pending.bench+'</p><p class="soft small" style="margin-top:6px">Minimum recording duration: '+durationText(pending.minimumSeconds)+' (total timed work). Keep yourself in the frame throughout.</p><button class="btn teal big wide" id="submit-session-video" style="margin-top:12px">Film or submit training session</button><button class="btn ghost wide" id="discard-pending-video" style="margin-top:9px">Discard unverified drills</button>':'<p class="chip next" style="margin-top:12px">No drills awaiting video. Complete a drill timer first.</p>')+'</div>';
+    if(all&&!pending)h+='<div class="card" style="background:var(--teal-soft);border-color:#a9e2dc"><b>Today\'s drills verified — '+td.trainingXp+' training XP!</b> Stretch, hydrate, and keep up the good work.</div>';
+    h += '<div class="sect"><h2>All drills</h2><span class="soft small">' + A.DRILLS.length + ' drills for your gear</span></div><div class="filter"><button data-filter="all" class="' + (filter === 'all' ? 'on' : '') + '">All</button>' +
+      Object.keys(A.AREAS).map(function (k) { return '<button data-filter="' + k + '" class="' + (filter === k ? 'on' : '') + '">' + A.AREAS[k] + '</button>'; }).join('') + '</div><div class="grid3">' +
+      A.DRILLS.filter(function (d) { return filter === 'all' || d.area === filter; }).map(function (d) { return drillItem(d.id, null, drillState(d.id,td,pending)); }).join('') + '</div>';
+    return h + '</div>';
+  }
+  function tests() {
+    var P = S.progress, d = F.derived(), v = viewBench || d.cur, b = A.BENCH[v - 1];
+    var passed = A.TESTS.filter(function (t) { return P.tests[t.id].lvl >= v; }).length;
+    var h = '<div class="wrap"><div class="steps10">' + A.BENCH.map(function (x) { return '<button data-bench="' + x.n + '" class="' + (x.n <= d.bench ? 'done' : x.n === d.cur ? 'cur' : '') + (x.n === v ? ' view' : '') + '">' + gateSvg(x.n, x.age, x.name) + '</button>'; }).join('') + '</div>';
+    var training = X.trainingFor(P, v);
+    h += '<div class="card"><div class="row"><div class="sp"><h2>Benchmark ' + v + ' &middot; ' + b.age + ' ' + b.name + '</h2><p class="soft small" style="margin-top:4px">' + (v <= d.bench ? 'Reward earned! All tests passed and training XP completed.' : 'Both required: 10 video tests at 90/100 or higher AND 500 training XP earned in this benchmark. Each passed test pays +100 XP; finishing both goals pays +5,000 XP.') + '</p></div><span class="num" style="font-size:40px">' + passed + '<span style="font-size:22px">/10</span></span></div><div class="bar teal" style="margin-top:10px"><i style="width:' + passed * 10 + '%"></i></div><p class="small soft" style="margin-top:12px">Training XP for this benchmark: <b>' + training + ' / ' + X.TRAINING_REQUIRED + '</b></p><div class="bar gold" style="margin-top:7px"><i style="width:' + Math.min(100, training / X.TRAINING_REQUIRED * 100) + '%"></i></div>' + (passed === 10 && training < X.TRAINING_REQUIRED ? '<p class="chip next" style="margin-top:12px">Tests complete — earn ' + (X.TRAINING_REQUIRED-training) + ' more training XP to unlock the reward.</p>' : '') + '</div>';
+    h += '<div style="display:flex;flex-direction:column;gap:8px">' + A.TESTS.map(function (t) {
+      var ts = P.tests[t.id], st = ts.lvl >= v ? '<span class="chip pass">Passed</span>' : ts.lvl === v - 1 ? '<span class="chip next">Take this test</span>' : '<span class="chip">Pass level ' + (ts.lvl + 1) + ' first</span>';
+      var pips = ''; for (var i = 1; i <= 10; i++) pips += '<i class="' + (i <= ts.lvl ? 'f' : i === v ? 't' : '') + '"></i>';
+      return '<button class="trow" data-test="' + t.id + '"><span><b style="font-size:18px">' + esc(t.name) + '</b><span class="meta soft small" style="display:block">' + esc(t.area) + (ts.pb != null ? ' &middot; your best: ' + F.fmt(t, ts.pb) : '') + '</span><span class="lvbar">' + pips + '</span></span>' +
+        '<span class="tg"><b>' + F.fmt(t, F.target(t.id, v)) + '</b><span>' + (t.low ? 'seconds or less' : esc(t.unit)) + '</span></span>' + st + '</button>';
+    }).join('') + '</div>';
+    return h + '<p class="soft small">The Shankly Gates icons show your benchmark road from 1 to 10, and the dots show your level on each test. Each video-reviewed score of 90/100 or higher advances one level, provided the numeric target is met and the on-device pose AI verifies the full challenge.</p></div>';
+  }
+  function rewards() {
+    var d = F.derived(), rs = S.config.rewards.slice();
+    var rank = function (r) { return r.given ? 2 : F.isReady(r, d) ? 0 : 1; };
+    rs.sort(function (a, b) { return rank(a) - rank(b) || (a.trig === 'bench' ? a.n : 50) - (b.trig === 'bench' ? b.n : 50); });
+    var h = '<div class="wrap"><div class="sect"><h2>Rewards</h2><span class="soft small">Pass 10 camera tests and earn 500 training XP per benchmark for +5,000 bonus XP and your reward</span></div>';
+    if (!rs.length) h += '<div class="card soft">No rewards yet. A parent can add some with the lock button at the top.</div>';
+    h += rs.map(function (r) {
+      var st = rank(r);
+      return '<div class="rw ' + ['ready', 'locked', 'given'][st] + '"><div class="em">' + esc(r.icon) + '</div><div class="sp"><b>' + esc(r.title) + '</b>' + (r.note ? '<span class="small">' + esc(r.note) + '</span><br>' : '') + '<span class="soft small">' + esc(F.trigText(r)) + '</span></div>' +
+        (st === 0 ? '<span class="chip gold">+5,000 XP earned · Show a parent</span>' : st === 2 ? '<span class="chip pass">Given · bonus claimed</span>' : '<span class="chip">Locked</span>') + '</div>';
+    }).join('');
+    return h + '<p class="soft small">Parents: tap the lock at the top to add or change rewards.</p></div>';
+  }
+  function radar(attr) {
+    var ks = Object.keys(attr), n = ks.length, cx = 150, cy = 132, R = 92, pts = '', grid = '', lab = '';
+    ks.forEach(function (k, i) {
+      var a = -Math.PI / 2 + i * 2 * Math.PI / n, r = R * (attr[k] - 30) / 70;
+      pts += (cx + r * Math.cos(a)).toFixed(1) + ',' + (cy + r * Math.sin(a)).toFixed(1) + ' ';
+      grid += '<line x1="' + cx + '" y1="' + cy + '" x2="' + (cx + R * Math.cos(a)).toFixed(1) + '" y2="' + (cy + R * Math.sin(a)).toFixed(1) + '" stroke="#dcdfd6" stroke-width="1.5"/>';
+      lab += '<text x="' + (cx + (R + 22) * Math.cos(a)).toFixed(1) + '" y="' + (cy + (R + 16) * Math.sin(a) + 4).toFixed(1) + '" text-anchor="middle">' + k + ' ' + attr[k] + '</text>';
+    });
+    [0.33, 0.66, 1].forEach(function (f) { var p = ''; for (var i = 0; i < n; i++) { var a = -Math.PI / 2 + i * 2 * Math.PI / n; p += (cx + R * f * Math.cos(a)).toFixed(1) + ',' + (cy + R * f * Math.sin(a)).toFixed(1) + ' '; } grid += '<polygon points="' + p + '" fill="none" stroke="#dcdfd6" stroke-width="1.5"/>'; });
+    return '<svg class="radar" viewBox="0 0 300 270" style="width:100%;max-width:380px;display:block;margin:0 auto">' + grid + '<polygon points="' + pts + '" fill="rgba(200,16,46,.22)" stroke="#c8102e" stroke-width="3" stroke-linejoin="round"/>' + lab + '</svg>';
+  }
+  function card() {
+    var P = S.progress, d = F.derived(), b = A.BENCH[Math.max(0, d.bench - 1)];
+    var h = '<div class="wrap"><div class="pc"><div class="ovr">' + d.ovr + '<small>RATING</small></div><div><h2>' + esc(S.config.name) + '</h2><p style="font-weight:600;font-size:19px;margin-top:6px">' + esc(d.rankName) + ' &middot; ' + P.xp + ' XP</p><p style="opacity:.9;margin-top:4px">' + (d.bench ? 'Benchmark ' + d.bench + ' complete: ' + b.age + ' ' + b.name : 'Working on Benchmark 1') + '</p><p style="opacity:.9">' + P.days.length + ' training days &middot; ' + P.drills + ' drills done</p></div></div>';
+    h += '<div class="grid2"><div class="card"><h2>My skills</h2><p class="soft small">Pass tests to push each point out.</p>' + radar(d.attr) + '</div><div class="card"><h2>Personal bests</h2><div style="display:flex;flex-direction:column;gap:6px;margin-top:8px">' +
+      A.TESTS.map(function (t) { var ts = P.tests[t.id]; return '<div class="row" style="border-bottom:1.5px solid var(--line);padding-bottom:5px"><span class="sp" style="font-weight:600">' + esc(t.name) + '</span><span class="chip">Level ' + ts.lvl + '</span><span class="num" style="font-size:22px;min-width:58px;text-align:right">' + F.fmt(t, ts.pb) + '</span></div>'; }).join('') + '</div></div></div>';
+    h += '<div class="card"><h2>Badges</h2><div class="badges" style="margin-top:10px">' + A.BADGES.map(function (x) { return '<div class="bdg' + (P.badges[x[0]] ? ' on' : '') + '">' + esc(x[1]) + '</div>'; }).join('') + '</div></div>';
+    if (P.log.length) h += '<div class="card"><h2>Latest tests</h2><div style="margin-top:8px;display:flex;flex-direction:column;gap:6px">' + P.log.slice(0, 6).map(function (e) { var t = A.test[e.test]; return '<div class="row"><span class="soft small" style="min-width:86px">' + new Date(e.t).toLocaleDateString() + '</span><span class="sp" style="font-weight:600">' + esc(t.name) + '</span><span class="num" style="font-size:20px">' + F.fmt(t, e.score) + '</span>' + (e.to > e.from ? '<span class="chip pass">Certified ' + e.to + '</span>' : '<span class="chip">Not yet</span>') + (e.grade == null ? '' : '<span class="chip">' + e.grade + '/100</span>') + '</div>'; }).join('') + '</div></div>';
+    return h + '</div>';
+  }
+  function render() {
+    var d = F.derived(), P = S.progress;
+    $('t-name').textContent = S.config.name;
+    $('t-week').innerHTML = '<b>' + d.week + '/4</b> days this week';
+    $('t-xp').innerHTML = '<b>' + P.xp + '</b> XP';
+    Array.prototype.forEach.call($('tabs').children, function (b) { b.classList.toggle('on', b.dataset.tab === tab); });
+    $('main').innerHTML = { home: home, train: train, tests: tests, rewards: rewards, card: card }[tab]();
+  }
+  function go(t) { tab = t; if (t !== 'tests') viewBench = 0; render(); $('main').scrollTop = 0; }
+
+  /* ---------- drill sheet + interval timer ---------- */
+  var T = null, loop = null;
+  function openDrill(id) {
+    var d = A.drill[id], video = A.VIDEO[A.AREA_VIDEO[d.area] || 'weave'];
+    var h = '<div class="two"><div class="card"><p class="chip">' + A.AREAS[d.area] + ' &middot; ' + d.min + ' min &middot; ' + esc(d.gear) + '</p><h3 style="margin-top:12px">Set up</h3><p>' + esc(d.setup) + '</p><h3 style="margin-top:14px">' + (d.seq ? 'One for each round' : 'What to do') + '</h3><ol class="how">' + d.steps.map(function (s) { return '<li>' + esc(s) + '</li>'; }).join('') + '</ol>' +
+      '<h3 style="margin-top:14px">Coach says</h3><ul class="tips">' + d.tips.map(function (s) { return '<li>' + esc(s) + '</li>'; }).join('') + '</ul>' + (d.style ? '<p class="style" style="margin-top:10px">' + esc(d.style) + '</p>' : '') + '<p class="soft small" style="margin-top:12px"><b>Too easy?</b> ' + esc(d.more) + '</p></div>' +
+      '<div class="card">' + F.videoHtml(video, true) + '</div>' +
+      '<div class="card"><div id="clock"></div><div class="row" style="justify-content:center;flex-wrap:wrap"><button class="btn red big" id="t-go">Start the timer</button></div><p class="soft small" style="text-align:center;margin-top:10px">' + d.timer[2] + ' rounds: ' + d.timer[0] + ' seconds of work, ' + d.timer[1] + ' seconds of rest. Completing the timer queues this drill. You must film and submit the training session before any XP is earned.</p><button class="btn teal wide big" style="margin-top:16px" id="t-done" disabled>Finish drill · wait for video XP</button></div></div>';
+    T = { d: d, set: 0, phase: 'idle', left: 0, run: false, end: 0, last: 0 };
+    openSheet(d.name, h, function () { T = null; clearInterval(loop); });
+    drawClock();
+    $('t-go').onclick = function () { if (T.phase === 'idle' || T.phase === 'done') { T.set = 0; setPhase('ready', 5); T.run = true; } else if (T.run) { T.run = false; T.left = Math.max(0, (T.end - performance.now()) / 1000); } else { T.run = true; T.end = performance.now() + T.left * 1000; } drawClock(); };
+    $('t-done').onclick = function () { finishDrill(id); };
+    clearInterval(loop); loop = setInterval(tick, 200);
+    try { if (navigator.wakeLock) navigator.wakeLock.request('screen').catch(function () { }); } catch (e) { }
+  }
+  function setPhase(p, secs) { T.phase = p; T.left = secs; T.end = performance.now() + secs * 1000; T.last = Math.ceil(secs); beep(p === 'work' ? 880 : p === 'rest' ? 440 : 660, 0.3); }
+  function nextPhase() {
+    var tm = T.d.timer;
+    if (T.phase === 'ready') setPhase('work', tm[0]);
+    else if (T.phase === 'work') { if (T.set + 1 >= tm[2]) { T.phase = 'done'; T.run = false; beep(880, 0.15); setTimeout(function () { beep(1100, 0.4); }, 180); } else setPhase('rest', tm[1]); }
+    else if (T.phase === 'rest') { T.set++; setPhase('work', tm[0]); }
+    drawClock();
+  }
+  function tick() {
+    if (!T || !T.run) return;
+    var left = (T.end - performance.now()) / 1000;
+    if (left <= 0) return nextPhase();
+    var c = Math.ceil(left); if (c !== T.last) { T.last = c; if (c <= 3) beep(600, 0.08); }
+    T.left = left; drawClock();
+  }
+  function drawClock() {
+    if (!T || !$('clock')) return;
+    var d = T.d, n = d.timer[2], names = { idle: 'Ready when you are', ready: 'Get ready', work: 'Go!', rest: 'Rest', done: 'Drill complete' }, sets = '';
+    for (var i = 0; i < n; i++) sets += '<i class="' + (i < T.set || T.phase === 'done' ? 'f' : i === T.set && T.phase !== 'idle' ? 'c' : '') + '"></i>';
+    var now = T.phase === 'work' || T.phase === 'ready' ? (d.seq ? d.steps[T.set % d.steps.length] : 'Round ' + (T.set + 1) + ' of ' + n) : T.phase === 'rest' ? 'Next: ' + (d.seq ? d.steps[(T.set + 1) % d.steps.length] : 'round ' + (T.set + 2)) : '';
+    var secs = T.phase === 'idle' ? d.timer[0] : T.phase === 'done' ? 0 : Math.ceil(T.left);
+    $('clock').innerHTML = '<div class="clock ' + T.phase + '"><div class="ph">' + names[T.phase] + '</div><div class="t">' + secs + '</div><div class="now">' + esc(now) + '</div></div><div class="sets">' + sets + '</div>';
+    $('t-go').textContent = T.phase === 'idle' ? 'Start the timer' : T.phase === 'done' ? 'Go again' : T.run ? 'Pause' : 'Keep going';
+    $('t-done').disabled = T.phase !== 'done';
+    $('t-done').textContent = T.phase === 'done' ? 'Add drill to my filmed session' : 'Complete timer first · no XP yet';
+  }
+  function finishDrill(id) {
+    if(!T||T.phase!=='done'||!T.d||T.d.id!==id){toast('Finish every timer round before submitting a session video.');return;}
+    var result=X.stageTraining(S.progress,F.derived().cur,id,F.ymd(),T.d.timer[0]*T.d.timer[2]);
+    if(result.ok){F.save(F.KP);closeSheet();render();go('train');toast('Drill added! Film the session to claim XP.');}
+    else{toast(result.reason);}
+  }
+
+  document.addEventListener('click',function(e){
+    var s=e.target.closest('#submit-session-video'),x=e.target.closest('#discard-pending-video');
+    if(s&&window.FTA.openTrainingProof)window.FTA.openTrainingProof();
+    if(x)ask({title:'Discard these unfinished drills?',text:'Unverified drills will be removed. No training XP was awarded.',buttons:[{label:'Discard',kind:'red',v:1},{label:'Keep',v:0}]}).then(function(r){if(!r.v)return;S.progress.pendingTraining=null;F.save(F.KP);render();toast('Unverified drills discarded.');});
+  });
+
+  /* ---------- clicks ---------- */
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest('[data-tab],[data-drill],[data-test],[data-bench],[data-filter],[data-mission]'); if (!b) return;
+    if (b.dataset.tab) go(b.dataset.tab);
+    else if (b.dataset.drill) openDrill(b.dataset.drill);
+    else if (b.dataset.test) window.FTA.openTest(b.dataset.test);
+    else if (b.dataset.bench) { viewBench = +b.dataset.bench; render(); }
+    else if (b.dataset.filter) { filter = b.dataset.filter; render(); }
+    else if (b.dataset.mission) { var snap = snapshot(); S.progress.missions[b.dataset.mission] = Date.now(); S.progress.xp += 15; settle(snap); toast('+15 XP'); }
+  });
+  $('sh-x').onclick = closeSheet;
+
+  F.toast = toast; F.party = party; F.ask = ask; F.beep = beep; F.openSheet = openSheet; F.closeSheet = closeSheet; F.render = render; F.go = go;
+  F.getTodayPlan = function(){return plan().ids.slice();};
+  F.videoHtml = function (v, related) {
+    if (!v) return '';
+    var id = encodeURIComponent(v.id), src = 'https://www.youtube-nocookie.com/embed/' + id,
+      link = 'https://www.youtube.com/watch?v=' + id;
+    return '<div class="lesson"><div class="row" style="align-items:center;flex-wrap:wrap"><h3 class="sp">Watch a real-player demonstration</h3><span class="chip">VIDEO</span></div>' +
+      '<p class="soft small" style="margin:5px 0 9px">' + esc(v.name) + ' · ' + esc(v.creator) + (related ? ' · Related technique, not necessarily the exact test' : '') + '</p>' +
+      '<div class="lesson-video"><iframe loading="lazy" src="' + src + '" title="' + esc(v.name) + '" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div>' +
+      '<a class="btn ghost" href="' + link + '" target="_blank" rel="noopener noreferrer" style="margin-top:9px">Watch on YouTube if the preview is blocked ↗</a></div>';
+  };
+  F.snapshot = snapshot; F.settle = settle; F.applyResult = applyResult;
+})();
+
+/* pose-engine */
+/* First Team Academy local video assessment engine. No image/video/network upload.
+   Pure, deterministic pose-geometry heuristics. They are for camera-verifiable
+   movement challenges, NOT an expert soccer-technique diagnosis. */
+(function (root) {
+  'use strict';
+  function clamp(n,a,b){return Math.max(a,Math.min(b,n));}
+  function avg(a,b){return (a+b)/2;}
+  function angle(a,b,c){
+    var u={x:a.x-b.x,y:a.y-b.y},v={x:c.x-b.x,y:c.y-b.y};
+    var m=Math.hypot(u.x,u.y)*Math.hypot(v.x,v.y);
+    return m?Math.acos(clamp((u.x*v.x+u.y*v.y)/m,-1,1))*180/Math.PI:180;
+  }
+  function features(landmarks){
+    var lm=landmarks||[], ids=[11,12,23,24,25,26,27,28];
+    if(ids.some(function(i){var p=lm[i];return !p||!Number.isFinite(p.x)||!Number.isFinite(p.y)||p.x<.018||p.x>.982||p.y<.018||p.y>.982||(p.visibility!==undefined&&p.visibility<.58);}))return null;
+    var sh=avg(lm[11].y,lm[12].y),hy=avg(lm[23].y,lm[24].y),ay=avg(lm[27].y,lm[28].y);
+    var h=ay-sh,leg=ay-hy;
+    if(h<.22||leg<.15||h>1.1)return null;
+    var shx=avg(lm[11].x,lm[12].x),hx=avg(lm[23].x,lm[24].x);
+    var sw=Math.abs(lm[11].x-lm[12].x),feet=Math.abs(lm[27].x-lm[28].x);
+    return {
+      h:h,leg:leg,hx:hx,shx:shx,ay:ay,hy:hy,sw:sw,feet:feet,
+      legs:[{knee:lm[25].y- lm[23].y, foot:lm[27].y},{knee:lm[26].y- lm[24].y,foot:lm[28].y}],
+      ankleL:lm[27].y, ankleR:lm[28].y,
+      kneeAngle:avg(angle(lm[23],lm[25],lm[27]),angle(lm[24],lm[26],lm[28])),
+      upright:Math.abs(shx-hx)<=h*.19
+    };
+  }
+  function grade(mode, secs, target, data){
+    if(!data||!Array.isArray(data.samples)||!Number.isFinite(target)||target<=0)throw new Error('Invalid assessment inputs');
+    if(!['apart','knee','fastknee','lateral','jump','balance','squat'].includes(mode))throw new Error('Unrecognized camera challenge');
+    var duration=Number(data.duration), samples=data.samples, fps=Number(data.fps)||10;
+    if(!Number.isFinite(duration)||duration<secs+1.8)return {status:'ungradable',reason:'Record at least '+(secs+2)+' seconds: stand still for 2 seconds, then complete the full exercise.'};
+    if(samples.length < secs*Math.min(fps,7))return {status:'ungradable',reason:'Not enough video frames were processed for a reliable assessment.'};
+    var processed=samples.map(function(s){return {t:s.t,f:features(s.lm)};});
+    var warm=processed.filter(function(s){return s.t>=.10&&s.t<=1.85&&s.f;});
+    if(warm.length<Math.max(6,Math.floor(fps*.9)))return {status:'ungradable',reason:'Cannot calibrate. Stand still with your whole body in view for the first 2 seconds.'};
+    var center=warm.reduce(function(s,v){return s+v.f.hx;},0)/warm.length;
+    var ankle=warm.reduce(function(s,v){return s+v.f.ay;},0)/warm.length;
+    var scale=warm.reduce(function(s,v){return s+v.f.h;},0)/warm.length;
+    var warmHips=warm.map(function(x){return x.f.hx;});
+    var warmFeet=warm.map(function(x){return x.f.feet;});
+    var warmAnkles=warm.map(function(x){return x.f.ay;});
+    function spread(a){return Math.max.apply(null,a)-Math.min.apply(null,a);}
+    if(spread(warmHips)>.065||spread(warmFeet)>scale*.22||spread(warmAnkles)>scale*.11){
+      return {status:'ungradable',reason:'Start your recording standing still for 2 full seconds before you begin the challenge.'};
+    }
+    var shoulderW=warm.reduce(function(s,v){return s+v.f.sw;},0)/warm.length;
+    var move=processed.filter(function(s){return s.t>=2&&s.t<=secs+2.025;});
+    var usable=move.filter(function(s){return s.f;});
+    var ratio=usable.length/Math.max(1,move.length),first=usable[0],last=usable[usable.length-1];
+    var longestGap=0,pr=2;
+    usable.forEach(function(s){longestGap=Math.max(longestGap,s.t-pr);pr=s.t;});
+    longestGap=Math.max(longestGap,secs+2-pr);
+    if(ratio<.84||!first||first.t>3||!last||last.t<secs+1||longestGap>1.15){
+      return {status:'ungradable',reason:'The camera lost your whole body for too long. Move farther from the iPad, improve lighting and keep your feet in the frame.',coverage:Math.round(ratio*100)};
+    }
+    var count=0,events=[],lastEvent=-100,progress='ready',side=null,prevA=false,prevB=false;
+    var squatDown=false,jumpAir=false,balanceStart=null,longestHold=0;
+    var qualityFrames=0,uprightFrames=0,stableFrames=0;
+    var n=0;
+    usable.forEach(function(s){
+      var f=s.f,t=s.t;
+      qualityFrames++;if(f.upright)uprightFrames++;
+      if(Math.abs(f.shx-f.hx)<f.h*.26)stableFrames++;
+      function event(minGap){if(t-lastEvent>=minGap){count++;events.push(t);lastEvent=t;}}
+      if(mode==='apart'){
+        var wide=f.feet>Math.max(shoulderW*1.47,scale*.16),narrow=f.feet<Math.max(shoulderW*1.06,scale*.105);
+        if(progress==='ready'&&wide)progress='wide';
+        else if(progress==='wide'&&narrow){event(.38);progress='ready';}
+      }else if(mode==='knee'||mode==='fastknee'){
+        var active=[];
+        for(var i=0;i<2;i++){
+          var lift=mode==='knee' ? f.legs[i].knee < f.leg*.255 :
+            f.legs[i].foot < (i===0?f.ankleR:f.ankleL)-scale*.055;
+          active.push(lift);
+        }
+        // One discrete raise-and-lower per leg; alternating sides required.
+        if(active[0]&&!prevA)side='L';
+        if(active[1]&&!prevB)side='R';
+        if(prevA&&!active[0]&&side==='L'&&lastEvent<t-.14){if(progress!=='L'){event(.16);progress='L';}side=null;}
+        if(prevB&&!active[1]&&side==='R'&&lastEvent<t-.14){if(progress!=='R'){event(.16);progress='R';}side=null;}
+        prevA=active[0];prevB=active[1];
+      }else if(mode==='lateral'){
+        var offset=f.hx-center,bound=Math.max(.068,shoulderW*.44),lane=offset<=-bound?'L':offset>=bound?'R':null;
+        if(lane&&lane!==side){if(side&&lane!==side)event(.38);side=lane;}
+      }else if(mode==='jump'){
+        var inAir=f.ay<ankle-scale*.055&&Math.abs(f.ankleL-f.ankleR)<scale*.11;
+        if(inAir&&!jumpAir)jumpAir=true;
+        if(!inAir&&jumpAir){event(.34);jumpAir=false;}
+      }else if(mode==='squat'){
+        if(f.kneeAngle<135&&!squatDown)squatDown=true;
+        if(f.kneeAngle>158&&squatDown){event(.65);squatDown=false;}
+      }else if(mode==='balance'){
+        var lifted=Math.abs(f.ankleL-f.ankleR)>scale*.12;
+        var calm=Math.abs(f.shx-f.hx)<scale*.20;
+        if(lifted&&calm){if(balanceStart===null)balanceStart=t;longestHold=Math.max(longestHold,t-balanceStart);}
+        else balanceStart=null;
+      }
+      n++;
+    });
+    if(mode==='balance')count=Math.max(0,Math.floor(longestHold*10)/10);
+    var performancePoints=clamp(Math.round((count/target)*70),0,70);
+    // Posture proxy, not a validated biomechanical technique score. Consistent landmarks
+    // plus relatively aligned trunk help avoid awarding high marks to blurry footage.
+    var uprightRatio=uprightFrames/Math.max(1,qualityFrames);
+    var stableRatio=stableFrames/Math.max(1,qualityFrames);
+    var techniquePoints=clamp(Math.round(30*(uprightRatio*.72+stableRatio*.28)),0,30);
+    var score=clamp(performancePoints+techniquePoints,0,100);
+    var met=count>=target, passed=met&&score>=90;
+    var feedback=[];
+    if(!met)feedback.push('Camera counted '+(Number.isInteger(count)?count:count.toFixed(1))+'; goal is '+target+'. Try again after practicing.');
+    if(techniquePoints<25)feedback.push('Keep your shoulders above your hips and stay in frame.');
+    if(mode==='lateral')feedback.push('Move further to both sides; film from far enough back.');
+    return {status:'graded',method:'local-pose',confidence:'high',complete:true,metTarget:met,passed:passed,
+      score:count,grade:score,performancePoints:performancePoints,techniquePoints:techniquePoints,
+      coverage:Math.round(ratio*100),upright:Math.round(uprightRatio*100),
+      feedback:feedback,frames:usable.length,secs:secs,events:events.length};
+  }
+  var api={grade:grade,features:features};
+  root.FTAPoseGrade=api;
+  if(typeof module!=='undefined'&&module.exports)module.exports=api;
+})(typeof window!=='undefined'?window:globalThis);
+
+/* training-proof */
+/* Local session-video motion evidence. Samples sampled across full recording;
+   does not claim to recognize soccer balls, named drills or player identity. */
+(function(root){
+  'use strict';
+  function abs(a,b){return Math.abs((Number(a)||0)-(Number(b)||0));}
+  function measure(a,b){
+    if(!a||!b)return 0;
+    var h=Math.max(.2,(a.h+b.h)/2);
+    return (abs(a.ankleL,b.ankleL)+abs(a.ankleR,b.ankleR)+abs(a.feet,b.feet)+
+      abs(a.hx,b.hx)+abs(a.hy,b.hy)+abs(a.kneeAngle,b.kneeAngle)/180*h)/h;
+  }
+  function assess(input){
+    if(!input||!Array.isArray(input.pairs)||!Number.isFinite(input.minimumSeconds)||input.minimumSeconds<=0)
+      throw Error('Bad session proof input');
+    var n=input.pairs.length,duration=input.duration;
+    if(!Number.isFinite(duration)||duration+2<input.minimumSeconds)return {status:'unverified',reason:'The video is too short to show the timed work in all completed drills.'};
+    if(duration>3*3600)return {status:'unverified',reason:'This recording is too long. Use a video of just the training session.'};
+    if(n<12)return {status:'unverified',reason:'Not enough sections of the recording were checked.'};
+    var visible=0,active=0,third=[0,0,0],movement=0;
+    input.pairs.forEach(function(p,i){
+      var f1=p.a&&root.FTAPoseGrade.features(p.a),f2=p.b&&root.FTAPoseGrade.features(p.b);
+      if(f1&&f2){
+        visible++;third[Math.min(2,Math.floor(i*3/n))]++;
+        var m=measure(f1,f2);movement+=m;
+        if(m>.085)active++;
+      }
+    });
+    var coverage=Math.round(visible*100/n),activity=visible?Math.round(active*100/visible):0;
+    if(coverage<58||third.some(function(x){return x<2;}))return {
+      status:'unverified',coverage:coverage,activity:activity,
+      reason:'Your whole body was not visible often enough across the beginning, middle and end of the session. Set the camera farther away and keep your feet in view.'};
+    if(activity<20||active<3)return {status:'unverified',coverage:coverage,activity:activity,
+      reason:'Not enough movement could be verified. Keep the camera steady and record active parts of the training session.'};
+    return {status:'verified',method:'local-pose-session',duration:duration,coverage:coverage,
+      activity:activity,frames:n*2,segments:n,
+      note:'Video length, body visibility and movement verified. Individual named soccer drills and the player’s identity cannot be verified by this model.'};
+  }
+  var api={assess:assess,measure:measure};
+  root.FTATrainingProof=api;
+  if(typeof module==='object'&&module.exports)module.exports=api;
+})(typeof window==='object'?window:globalThis);
+
+/* test */
+/* First Team Academy: benchmark tests, video review and scoring, coach check */
+(function () {
+  'use strict';
+  var F = window.FTA, A = F.A, $ = F.$, esc = F.esc, S = F.S;
+  var R = null, vid = null;
+
+  /* ---------- set-up pictures ---------- */
+  function dia(kind) {
+    var s = '<svg viewBox="0 0 320 150" xmlns="http://www.w3.org/2000/svg"><rect width="320" height="150" fill="#2f7d4f"/><rect x="6" y="6" width="308" height="138" fill="none" stroke="rgba(255,255,255,.25)" stroke-width="2"/>', i;
+    var cone = function (x, y) { return '<path d="M' + (x - 7) + ' ' + (y + 6) + 'L' + x + ' ' + (y - 9) + 'L' + (x + 7) + ' ' + (y + 6) + 'Z" fill="#ff9a2e" stroke="#fff" stroke-width="1.2"/>'; };
+    var ball = function (x, y) { return '<circle cx="' + x + '" cy="' + y + '" r="6" fill="#fff" stroke="#1a1c22" stroke-width="1.5"/>'; };
+    var me = function (x, y) { return '<circle cx="' + x + '" cy="' + y + '" r="9" fill="#c8102e" stroke="#fff" stroke-width="2"/>'; };
+    var txt = function (x, y, t) { return '<text x="' + x + '" y="' + y + '" fill="#fff" font-family="Barlow, sans-serif" font-weight="600" font-size="12.5" text-anchor="middle">' + t + '</text>'; };
+    var dash = ' stroke="#fff" stroke-width="2" stroke-dasharray="5 4" fill="none"';
+    if (kind === 'wall') s += '<rect x="262" y="42" width="10" height="64" fill="#fff"/>' + me(60, 75) + ball(84, 75) + '<path d="M98 69H252"' + dash + '/><path d="M252 82H98"' + dash + '/>' + txt(172, 56, '5 or 6 big steps') + txt(262, 128, 'pass-back');
+    else if (kind === 'weave') { for (i = 0; i < 6; i++) s += cone(72 + i * 40, 72); s += me(30, 72) + '<path d="M44 72Q72 46 92 72T132 72T172 72T212 72T252 72Q296 50 296 74Q296 98 272 84"' + dash + '/>' + txt(160, 126, '6 cones, 2 big steps apart. Up and back.'); }
+    else if (kind === 'ladder') { s += '<rect x="60" y="52" width="200" height="40" fill="none" stroke="#ffd34d" stroke-width="3"/>'; for (i = 1; i < 8; i++) s += '<line x1="' + (60 + i * 25) + '" y1="52" x2="' + (60 + i * 25) + '" y2="92" stroke="#ffd34d" stroke-width="3"/>'; s += me(30, 72) + '<path d="M44 72H286"' + dash + '/><path d="M286 104Q160 140 36 98"' + dash + '/>' + txt(160, 32, 'Through the ladder, then jog back round'); }
+    else if (kind === 'star') s += me(150, 78) + cone(150, 28) + cone(214, 82) + cone(150, 130) + '<path d="M150 66V42M162 78H202M150 90V116"' + dash + '/>' + txt(244, 40, '1 big step away');
+    else if (kind === 'shuttle') s += cone(40, 78) + cone(280, 78) + '<path d="M56 72H264M264 88H56"' + dash + '/>' + txt(160, 56, '20 big steps') + txt(160, 116, 'Each time you reach a cone counts as 1');
+    else if (kind === 'goal') s += '<rect x="72" y="32" width="34" height="78" fill="rgba(255,211,77,.5)"/><rect x="214" y="32" width="34" height="78" fill="rgba(255,211,77,.5)"/><path d="M70 110V30H250V110" fill="none" stroke="#fff" stroke-width="4"/><line x1="36" y1="110" x2="284" y2="110" stroke="#fff" stroke-width="2"/>' + cone(108, 112) + cone(212, 112) + ball(160, 134) + txt(160, 22, 'Corner zones');
+    else if (kind === 'move') s += me(48, 100) + ball(70, 100) + cone(170, 78) + '<path d="M82 98Q138 92 150 84Q164 58 204 50L276 38"' + dash + '/>' + txt(170, 112, 'the cone is your defender') + txt(246, 66, 'burst away');
+    else s += ball(160, 62) + me(160, 104) + '<path d="M134 54Q160 24 186 54"' + dash + '/>' + txt(160, 136, 'Just you and the ball');
+    return s + '</svg>';
+  }
+
+  /* ---------- the test page ---------- */
+  function info(id) {
+    var T = A.test[id], lvl = S.progress.tests[id].lvl, at = Math.min(10, lvl + 1), v = T.tier(at);
+    return { T: T, lvl: lvl, at: at, v: v, tg: F.target(id, at), rule: T.rules[Math.min(v, T.rules.length - 1)], b: A.BENCH[at - 1] };
+  }
+  function openTest(id) {
+    var o = info(id), T = o.T, top = o.lvl >= 10;
+    var currentBench = F.derived().cur;
+    if (o.at > currentBench && !top) {
+      F.openSheet(T.name + ': next benchmark locked', '<div class="card"><h2>Level ' + o.at + ' is locked</h2><p>Great work finishing this test at Benchmark ' + (o.at - 1) + '! Complete all 10 camera tests with a 90/100 grade AND earn 500 training XP in Benchmark ' + currentBench + ' to open Benchmark ' + o.at + '.</p><button class="btn red big wide" id="see-current" style="margin-top:14px">See my current benchmark</button></div>');
+      $('see-current').onclick = function () { F.closeSheet(); F.go('tests'); };
+      return;
+    }
+    if (top) { F.openSheet(T.name + ': mastered', '<div class="card"><h2>All 10 levels certified!</h2><p>You have reached the highest level for this test. Keep training and maintaining your skills.</p></div>'); return; }
+    var h = '<div class="two"><div class="card"><p class="chip next">' + (top ? 'Top level reached' : 'Going for level ' + o.at + ' &middot; ' + o.b.age + ' ' + o.b.name) + '</p>' +
+      '' +
+      '<h3 style="margin-top:12px">The test</h3><p>' + esc(o.rule) + '</p><h3 style="margin-top:14px">Target</h3><p><span class="num" style="font-size:54px;line-height:1;color:var(--red)">' + F.fmt(T, o.tg) + '</span> ' + (T.low ? 'seconds or less' : esc(T.unit)) + '</p>' +
+      '<h3 style="margin-top:14px">How it is scored</h3><p>' + esc(T.count) + '</p><h3 style="margin-top:14px">Coach says</h3><ul class="tips">' + T.points.map(function (p) { return '<li>' + esc(p) + '</li>'; }).join('') + '</ul><p class="soft small" style="margin-top:8px">You need: ' + esc(T.gear) + '</p></div>' +
+      '<div style="display:flex;flex-direction:column;gap:16px"><div class="card">' + F.videoHtml(A.VIDEO[id], true) + '<p class="grade-note">This soccer video is for training inspiration. The scored camera challenge is the different movement shown in the written rules.</p></div><div class="card"><h3>Film a camera challenge</h3><ol class="how"><li>Set the iPad landscape on a stable surface so it sees your entire body, from shoulders to both shoes.</li><li>Stand still facing the camera for the first <b>2 seconds</b> to calibrate.</li><li>Perform the movement for <b>' + T.secs + ' seconds</b>, with your whole body visible throughout.</li><li>The AI analyzes the recording right on this iPad. Nothing from your recording is uploaded.</li><li>Earn at least <b>90/100</b> and meet the numeric goal to pass (+100 XP the first time). Complete all 10 tests AND earn <b>500 training XP</b> in this benchmark to unlock the reward (+5,000 XP).</li></ol><p class="grade-note">' + esc(T.note) + '</p>' +
+      '<label class="btn red big wide" style="margin-top:12px">Record camera challenge<input class="vh" type="file" accept="video/*" capture="environment" id="f-rec"></label><label class="btn ghost wide" style="margin-top:8px">Choose existing recording<input class="vh" type="file" accept="video/*" id="f-pick"></label><p class="soft small" style="margin-top:10px">$0 per attempt · No API key · Works on GitHub Pages with internet access to load the free on-device model. Video stays on this device. Camera grading is a movement estimate, not a professional soccer-skills evaluation.</p></div></div></div>';
+    F.openSheet(T.name, h);
+    var take = function (e) { var f = e.target.files && e.target.files[0]; if (f) startReview(id, f); };
+    $('f-rec').onchange = take; $('f-pick').onchange = take;
+  }
+
+  /* ---------- free on-device vision: no video upload or backend ---------- */
+  var posePromise=null;
+  function loadPose(){
+    if(posePromise)return posePromise;
+    posePromise=(async function(){
+      var mod=await import('https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@1.2.3/+esm');
+      var wasm=await mod.FilesetResolver.forVisionTasks('https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@1.2.3/wasm');
+      return await mod.PoseLandmarker.createFromOptions(wasm,{
+        baseOptions:{modelAssetPath:'https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_lite/float16/1/pose_landmarker_lite.task',delegate:'CPU'},
+        runningMode:'VIDEO',numPoses:1,minPoseDetectionConfidence:.5,minTrackingConfidence:.5,minPosePresenceConfidence:.5
+      });
+    })().catch(function(e){posePromise=null;throw e;});
+    return posePromise;
+  }
+  function videoReady(video, eventName, maxWait){
+    // Safari can fire loadedmetadata before this listener is registered.
+    var level=eventName==='loadedmetadata'?1:eventName==='loadeddata'?2:0;
+    if(level&&video.readyState>=level&&video.videoWidth>0)return Promise.resolve();
+    return new Promise(function(resolve,reject){
+      var timer=setTimeout(function(){finish(Error('Video loading timed out. Try a short MP4 (H.264) recorded in the Camera app.'));},maxWait||25000);
+      var polling=setInterval(check,120),finished=false;
+      function end(){clearTimeout(timer);clearInterval(polling);['loadedmetadata','loadeddata','canplay','durationchange',eventName].forEach(function(x){video.removeEventListener(x,check);});video.removeEventListener('error',failed);}
+      function finish(err){if(finished)return;finished=true;end();err?reject(err):resolve();}
+      function check(){if(level&&video.readyState>=level&&video.videoWidth>0)finish();else if(!level&&eventName==='seeked'&&!video.seeking&&video.readyState>=2)finish();}
+      function failed(){finish(Error('This recording could not be opened. Try MP4/H.264, or record it with the iPad Camera app.'));}
+      ['loadedmetadata','loadeddata','canplay','durationchange',eventName].forEach(function(x){video.addEventListener(x,check);});video.addEventListener('error',failed);
+      check();
+    });
+  }
+  async function prepareVideo(video, durationHint){
+    await videoReady(video,'loadedmetadata',28000);
+    if(!video.videoWidth||!video.videoHeight)throw Error('Safari did not find any video frames. Try recording with the Camera app at 720p.');
+    var duration=video.duration;
+    if(!Number.isFinite(duration)||duration<=0){
+      // Chromium's WebM MediaRecorder may omit duration. Seeking to the end can
+      // recover metadata without changing the recording, including on re-import.
+      try{video.currentTime=1e8;await Promise.race([videoReady(video,'seeked',4800),new Promise(function(r){setTimeout(r,4900);})]);}catch(_){}
+      duration=video.duration;
+      try{video.currentTime=0;}catch(_){}
+    }
+    if((!Number.isFinite(duration)||duration<=0)&&Number.isFinite(durationHint)&&durationHint>0){duration=durationHint;}
+    if(!Number.isFinite(duration)||duration<=0)throw Error('The video is playable but does not contain readable duration metadata. Try MP4/H.264 using Camera, or download and re-open the recording.');
+    return duration;
+  }
+  async function seekTo(video,time){
+    if(!video||!video.isConnected)throw Error('Video analysis lost its video player. Reopen the recording and try again.');
+    if(!Number.isFinite(time)||time<0)throw Error('Invalid video position.');
+    if(Math.abs(video.currentTime-time)<.022&&video.readyState>=2&&!video.seeking)return;
+    video.currentTime=time;
+    await videoReady(video,'seeked',14500);
+    if(video.readyState<2)await videoReady(video,'loadeddata',12000);
+    // WebKit sometimes fires seeked before its newly decoded canvas frame is ready.
+    // A short delay avoids reading a stale image on iPad Safari.
+    await new Promise(function(r){setTimeout(r,55);});
+  }
+  var poseTimestamp=0;
+  function detectPoseFrame(model,video){
+    poseTimestamp=Math.max(poseTimestamp+67,Math.round(performance.now()));
+    return model.detectForVideo(video,poseTimestamp);
+  }
+  function startReview(id,file){
+    if(!/^video\//.test(file.type)&&!/\.(mov|mp4|m4v|webm|3gp)$/i.test(file.name)){F.toast('Please choose a video file.');return;}
+    if(file.size>450*1048576){F.toast('Video is too large; please record a shorter clip.');return;}
+    var o=info(id),my={id:id,at:o.at,T:o.T,tg:o.tg,file:file,url:URL.createObjectURL(file),phase:'ready',busy:false,error:'',progress:0,ai:null,res:null,abort:false};
+    R=my;
+    var h='<div class="rv"><div><div class="vbox"><video id="vid" playsinline webkit-playsinline muted controls preload="auto"></video></div>'+
+      '<p class="soft small" style="margin-top:9px">'+esc(file.name.slice(0,80))+' · '+(file.size/1048576).toFixed(1)+' MB · Local analysis only.</p>'+
+      '<p class="grade-note">No video leaves your iPad. The pose model is downloaded from a public CDN when first used. Stay on this screen during analysis.</p></div><div class="card" id="side"></div></div>';
+    F.openSheet(o.T.name+': on-device camera grade',h,function(){my.abort=true;try{if(vid)vid.pause();URL.revokeObjectURL(my.url);}catch(_){}if(R===my){R=null;vid=null;}});
+    vid=$('vid');vid.src=my.url;vid.load();side();
+    // Analysis starts automatically when an uploaded clip is available.
+    analyze();
+  }
+  async function analyze(){
+    if(!R||R.busy)return;
+    var my=R;my.busy=true;my.phase='running';my.error='';my.progress=0;side();
+    try{
+      var duration=await prepareVideo(vid);
+      if(R!==my||my.abort)return;
+      if(!Number.isFinite(duration)||duration<my.T.secs+1.8){
+        my.ai={status:'ungradable',reason:'Film a full '+(my.T.secs+2)+'-second video. First 2 seconds: stand still; next '+my.T.secs+' seconds: exercise.'};
+        my.busy=false;my.phase='ungradable';side();return;
+      }
+      if(duration>my.T.secs+30)throw Error('Clip is too long. Record just the 2-second calibration plus '+my.T.secs+'-second exercise.');
+      my.progress=1;side();
+      var pose=await loadPose();
+      if(R!==my||my.abort)return;
+      var fps=9,total=Math.floor((my.T.secs+2)*fps),samples=[];
+      for(var i=0;i<total;i++){
+        if(R!==my||my.abort)return;
+        var t=(i+.45)/fps;
+        await seekTo(vid,t);
+        var landmarks=detectPoseFrame(pose,vid).landmarks;
+        // Geometry only. Individual frames and videos are never sent anywhere or saved in progress.
+        samples.push({t:t,lm:landmarks&&landmarks[0]||null});
+        if(i%15===0||i===total-1){my.progress=Math.round(100*(i+1)/total);if($('local-progress'))$('local-progress').textContent=my.progress+'% of video scanned';await new Promise(function(res){setTimeout(res,0);});}
+      }
+      if(R!==my||my.abort)return;
+      var a=window.FTAPoseGrade.grade(my.T.mode,my.T.secs,my.tg,{duration:duration,fps:fps,samples:samples});
+      my.ai=a;my.busy=false;
+      if(a.status==='ungradable'){my.phase='ungradable';side();return;}
+      var passed=a.status==='graded'&&a.method==='local-pose'&&a.confidence==='high'&&a.passed===true&&a.metTarget===true&&a.grade>=90&&F.meets(my.T,a.score,my.tg);
+      my.res=F.applyResult(my.id,a.score,'local-pose',a.grade,passed,a.techniquePoints,a.feedback||[]);
+      my.phase='saved';side();if(my.res.gain>0){F.party();F.beep(740,.16);}
+    }catch(e){if(R!==my||my.abort)return;my.busy=false;my.phase='error';my.error=String(e.message||'Could not analyze locally.').slice(0,260);side();}
+  }
+  function side(){
+    if(!R||!$('side'))return;
+    var h='',a=R.ai;
+    if(R.phase==='saved'){
+      var res=R.res,entry=res.entry,passed=res.gain>0;
+      h='<div class="verdict '+(passed?'pass':'fail')+'"><h2>'+(passed?'Level certified!':'Keep practicing')+'</h2><p class="count" style="font-size:74px">'+entry.grade+'<span style="font-size:23px">/100</span></p>'+
+        '<p>Camera counted <b>'+F.fmt(R.T,entry.score)+'</b> '+esc(R.T.unit)+' · target '+F.fmt(R.T,R.tg)+'</p>'+
+        '<p>'+(passed?'Level '+entry.to+' completed.':'To advance: reach the target and 90/100 or higher.')+'</p></div>'+
+        '<div class="grade-meter" style="margin-top:14px"><i class="'+(entry.grade<70?'low':entry.grade<90?'near':'')+'" style="width:'+entry.grade+'%"></i></div>'+
+        '<p class="grade-note">Visible repetitions '+a.performancePoints+'/70 · Posture proxy '+a.techniquePoints+'/30 · Whole-body coverage '+a.coverage+'%</p>';
+      if(res.benchUp)h+='<p class="chip gold" style="margin-top:10px">Benchmark '+res.bench+' complete — +5,000 XP reward unlocked!</p>';
+      h+='<p class="soft small" style="margin-top:10px">'+(passed?'+100 XP for this first-time test pass!':'No XP for an unsuccessful attempt; try again.') + (res.bonusXp ? ' Plus a +5,000 XP benchmark bonus!' : '') + '</p>';
+    }else if(R.busy){
+      h='<h3>AI analyzing on this iPad</h3><p class="grade-note">The video stays on this device. Free body-position tracking counts the camera challenge.</p>'+
+        '<div style="text-align:center;font-size:42px;margin:22px" aria-label="Video assessment in progress">⚽</div><p id="local-progress" class="num" style="font-size:26px">'+(R.progress?R.progress+'% of video scanned':'Preparing the local model…')+'</p>'+
+        '<p class="small soft">First use requires internet to download the model. There is no subscription or API key.</p>';
+    }else if(R.phase==='ungradable'){
+      h='<div class="verdict fail"><h2>Needs a clearer attempt</h2><p>The model could not confidently verify the complete camera challenge.</p></div>'+
+        '<p style="margin-top:12px">'+esc(a.reason||'Keep the full body visible for the complete recording.')+'</p>'+
+        '<p class="grade-note">Not graded; no level or reward unlocked.</p>';
+    }else if(R.phase==='error'){
+      h='<h3>Local video-analysis problem</h3><p style="margin-top:10px">'+esc(R.error)+'</p>'+
+        '<p class="grade-note">Check internet access for the initial model download and that Safari can play the clip. No grade was saved.</p>';
+    }else{
+      h='<h3>Automatic local assessment</h3><p>The iPad estimates visible movement from your recording. Your actual soccer ball touches are not measured.</p>';
+    }
+    if(a&&Array.isArray(a.feedback)&&a.feedback.length)h+='<h3 style="margin-top:15px">Next time</h3><ul class="tips fix">'+a.feedback.map(function(s){return '<li>'+esc(s)+'</li>';}).join('')+'</ul>';
+    if(!R.busy&&(R.phase==='error'||R.phase==='ungradable'))h+='<button class="btn teal big wide" id="auto-retry" style="margin-top:14px">Try scanning again</button>';
+    if(!R.busy&&R.phase==='saved')h+='<button class="btn red big wide" id="auto-done" style="margin-top:14px">Back to benchmarks</button>';
+    $('side').innerHTML=h;
+    if($('auto-retry'))$('auto-retry').onclick=analyze;
+    if($('auto-done'))$('auto-done').onclick=function(){F.closeSheet();F.go('tests');};
+  }
+  F.loadPose=loadPose;F.videoReady=videoReady;F.prepareVideo=prepareVideo;F.seekTo=seekTo;F.detectPoseFrame=detectPoseFrame;
+  F.openTest=openTest;F.dia=dia;F.coachOn=function(){return false;};
+})();
+
+/* training-review */
+/* Session submission: local, no uploading, no video storage. Grants XP only
+   after full-session metadata and independently measured movement checks. */
+(function(){
+ 'use strict';
+ var F=window.FTA, X=F.XP, P=F.S.progress, $=F.$, esc=F.esc;
+ var state=null;
+ function friendly(sec){return Math.floor(sec/60)+'m '+Math.round(sec%60)+'s';}
+ function videoFile(f){return f&&(/^video\//.test(f.type)||/\.(mp4|mov|m4v|webm|3gp)$/i.test(f.name));}
+ async function fingerprint(file){
+   if(!window.crypto||!window.crypto.subtle)throw Error('A secure HTTPS site is needed to verify this video. Use the published GitHub Pages site.');
+   var block=128*1024,half=Math.max(0,Math.floor(file.size/2)-block/2),chunks=await Promise.all([
+     file.slice(0,block).arrayBuffer(),file.slice(half,half+block).arrayBuffer(),file.slice(Math.max(0,file.size-block)).arrayBuffer()]);
+   var prefix=new TextEncoder().encode(String(file.size)+':');
+   var data=new Uint8Array(prefix.length+chunks.reduce(function(x,b){return x+b.byteLength;},0));
+   data.set(prefix);var offset=prefix.length;
+   chunks.forEach(function(c){data.set(new Uint8Array(c),offset);offset+=c.byteLength;});
+   var digest=await window.crypto.subtle.digest('SHA-256',data);
+   return Array.prototype.map.call(new Uint8Array(digest),function(b){return b.toString(16).padStart(2,'0');}).join('');
+ }
+ function validPending(q){
+   var now=X.pendingSummary(F.S.progress);
+   return !!(now&&q&&now.date===q.date&&now.bench===q.bench&&now.ids.join('|')===q.ids.join('|'));
+ }
+ function open(preselected){
+   var q=X.pendingSummary(F.S.progress);if(!q){F.toast('Finish at least one drill timer first.');return;}
+   var html='<div class="two"><div class="card"><h3>Training session video</h3><ol class="how"><li>Record the whole training session with a phone or iPad on a stable stand. Show your full body as often as possible.</li><li>Make the video at least <b>'+friendly(q.minimumSeconds)+'</b> long: this is the total work time of your '+q.count+' completed timed drill'+(q.count===1?'':'s')+'. Include movement throughout, from beginning to end.</li><li>Choose your recording below, then press <b>Submit and check video</b>. The iPad scans activity throughout the footage. It cannot identify each individual soccer skill.</li><li>Only a verified recording awards the training XP. The video is never uploaded or saved by the website; only the successful check is saved.</li></ol>'+
+     '<label class="btn red big wide" style="margin-top:15px">Record training video<input type="file" accept="video/*" capture="environment" id="train-capture" class="vh"></label>'+
+     '<label class="btn ghost wide" style="margin-top:8px">Choose a video from Photos<input type="file" accept="video/*" id="train-choose" class="vh"></label>'+
+     '<p class="soft small" style="margin-top:12px">No Gemini key · $0 · The free MediaPipe model downloads on first use. For a long recording, use 720p video to save space. If the model cannot see you, no XP is awarded.</p></div>'+
+     '<div class="card"><div id="training-proof-result"><h3>Ready for recording</h3><p class="soft small">'+q.count+' timed drills are pending video verification. No XP has been given for them yet.</p></div></div></div>';
+   state={q:q,file:null,url:null,video:null,phase:'ready',busy:false,abort:false,progress:0,hash:null};var s=state;
+   F.openSheet('Submit training video',html,function(){s.abort=true;if(s.video)try{s.video.pause();}catch(_){}if(s.url)URL.revokeObjectURL(s.url);if(state===s)state=null;});
+   function choose(e){var f=e.target.files&&e.target.files[0];if(f)selected(s,f);}
+   $('train-capture').onchange=choose;$('train-choose').onchange=choose;
+   if(preselected&&videoFile(preselected))selected(s,preselected);
+ }
+ function selected(s,file){
+   if(!videoFile(file)){F.toast('Choose an actual video recording.');return;}
+   if(file.size>2.5*1024*1024*1024){F.toast('Video larger than 2.5 GB. Try a 720p recording.');return;}
+   if(s.url)URL.revokeObjectURL(s.url);
+   s.file=file;s.url=URL.createObjectURL(file);s.phase='selected';s.progress=0;
+   var pane=$('training-proof-result');
+   pane.innerHTML='<h3>Video ready for analysis</h3><div class="vbox" style="margin-top:10px"><video id="train-proof-video" playsinline webkit-playsinline muted controls preload="auto"></video></div>'+
+     '<p class="small soft" style="margin-top:9px">'+esc(file.name.slice(0,90))+' · '+(file.size/1048576).toFixed(1)+' MB · No network upload</p>'+
+     '<div id="training-proof-status"><button id="train-proof-start" class="btn teal big wide" style="margin-top:12px">Analyze video for training XP</button><p class="soft small" style="margin-top:10px">XP is credited only when the recording passes on-device visibility and movement checks. The player stays loaded during scanning.</p></div>';
+   s.video=$('train-proof-video');s.video.src=s.url;s.video.load();
+   $('train-proof-start').onclick=function(){analyze(s);};
+ }
+ function result(s,heading,message,okay){
+   if(state!==s)return;
+   var p=$('training-proof-status');if(!p)return;
+   var header='<div class="verdict '+(okay?'pass':'fail')+'"><h2>'+esc(heading)+'</h2><p>'+esc(message)+'</p></div>';
+   p.innerHTML=header+'<button class="btn '+(okay?'red':'ghost')+' wide big" id="train-proof-done" style="margin-top:14px">'+(okay?'Back to training':'Back to training / choose another recording')+'</button>';
+   $('train-proof-done').onclick=function(){F.closeSheet();F.go('train');};
+ }
+ async function analyze(s){
+   if(state!==s||s.busy||!s.file)return;
+   if(!validPending(s.q)){result(s,'Session changed','Return to Training and select the latest pending session.',false);return;}
+   s.busy=true;s.phase='analyzing';s.progress=0;
+   $('training-proof-status').innerHTML='<h3>Checking your session on this iPad</h3><p class="soft small" style="margin-top:9px">No video is uploaded. Keep this page open while the iPad scans frames throughout the recording.</p><h2 id="session-progress" style="margin:20px 0">Opening video...</h2><p class="soft small">The video player above stays open so Safari can decode it.</p>';
+   try{
+     var duration=await F.prepareVideo(s.video,F.recordedDuration?F.recordedDuration(s.file):null);
+     if(s.abort||state!==s)return;
+     if(!Number.isFinite(duration)||duration+2<s.q.minimumSeconds){
+       result(s,'Video too short','Your submitted recording needs at least '+friendly(s.q.minimumSeconds)+' of actual footage to match the completed drills. No XP awarded.',false);return;
+     }
+     if(duration>3*3600){result(s,'Video too long','Please record one training session at a time.',false);return;}
+     s.hash=await fingerprint(s.file);
+     if((F.S.progress.videoProofs||[]).some(function(x){return x.hash===s.hash;})){
+       result(s,'Recording already used','That exact recording was submitted before. Film this new session to earn more XP.',false);return;
+     }
+     var pose=await F.loadPose();if(s.abort||state!==s)return;
+     var n=Math.max(18,Math.min(32,s.q.count*4)),pairs=[];
+     for(var i=0;i<n;i++){
+       if(s.abort||state!==s)return;
+       var t=Math.max(.2,(i+.5)/n*(duration-2));
+       await F.seekTo(s.video,t);
+       var a=F.detectPoseFrame(pose,s.video).landmarks;
+       var t2=Math.min(duration-.25,t+.55);
+       await F.seekTo(s.video,t2);
+       var b=F.detectPoseFrame(pose,s.video).landmarks;
+       pairs.push({a:a&&a[0]||null,b:b&&b[0]||null});
+       if(i%2===0||i===n-1){s.progress=Math.round((i+1)/n*100);var bar=$('session-progress');if(bar)bar.textContent=s.progress+'% checked';await new Promise(function(done){setTimeout(done,0);});}
+     }
+     if(s.abort||state!==s)return;
+     var verdict=window.FTATrainingProof.assess({duration:duration,minimumSeconds:s.q.minimumSeconds,pairs:pairs});
+     if(verdict.status!=='verified'){result(s,'Video not verified',verdict.reason+' No XP awarded.',false);return;}
+     if(!validPending(s.q)){result(s,'Session changed','Your pending drills changed while scanning. No XP awarded.',false);return;}
+     verdict.hash=s.hash;
+     var snap=F.snapshot(),awarded=X.submitTrainingVideo(F.S.progress,verdict);
+     if(!awarded.accepted){result(s,'Not credited',awarded.reason+' No XP awarded.',false);return;}
+     if(F.S.progress.days.indexOf(awarded.date)<0)F.S.progress.days.push(awarded.date);
+     var bonus=X.awardBenchmarkBonuses(F.S.progress,F.A.TESTS);
+     F.settle(snap,false);
+     result(s,'Session verified!','+'+awarded.xp+' training XP for '+awarded.drills+' drills. Body visible in '+verdict.coverage+'% of sampled sections; movement detected in '+verdict.activity+'% of visible sections.'+(bonus.xp?' Benchmark earned: +5,000 bonus XP!':''),true);
+     if(awarded.xp)F.party();
+   }catch(e){if(!s.abort&&state===s)result(s,'Could not check video',String(e&&e.message||e).slice(0,220)+'. No XP awarded. Try again or record a clearer video.',false);}
+   finally{s.busy=false;}
+ }
+ F.openTrainingProof=open; F.fingerprintTrainingVideo=fingerprint; F.isTrainingVideo=videoFile;
+})();
+
+/* duration hints are only for in-memory videos recorded in this tab; no footage is stored. */
+(function(){var durations=new WeakMap();window.FTA.rememberRecording=function(file,seconds){if(file&&Number.isFinite(seconds))durations.set(file,seconds);};window.FTA.recordedDuration=function(file){return durations.get(file);};})();
+
+/* continuous-session-v10 */
+/* Records a single uninterrupted camera video while drill instructions update
+   on the other side of the screen. Raw camera video intentionally remains full
+   frame for pose verification; the coaching UI itself is NOT burned into file.
+   iPad Files/Photos saving requires a user-initiated share/download action. */
+(function(){
+ 'use strict';
+ var F=window.FTA, X=F.XP, $=F.$, esc=F.esc, current=null;
+ function fmt(t){t=Math.max(0,Math.ceil(t));var m=Math.floor(t/60),s=t%60;return m+':'+('0'+s).slice(-2);}
+ function cleanText(s){return String(s||'').replace(/<[^>]*>/g,'').replace(/[&<>]/g,'');}
+ function speak(s){
+   try{if(!('speechSynthesis' in window))return;window.speechSynthesis.cancel();
+     var u=new SpeechSynthesisUtterance(s);u.lang='en-US';u.rate=.96;u.volume=.95;window.speechSynthesis.speak(u);
+   }catch(e){}
+ }
+ function stopVoice(){try{window.speechSynthesis.cancel();}catch(e){}}
+ function planToday(){
+   var P=F.S.progress, todays=P.today||{},date=F.ymd(),credited=todays.date===date?(todays.ids||[]):[];
+   // Use the same deterministic seven-drill plan as the main training screen.
+   var all=F.getTodayPlan?F.getTodayPlan():[];
+   return all.filter(function(id){return credited.indexOf(id)<0;});
+ }
+ function phasesFor(ids){
+   var phases=[];
+   ids.forEach(function(id,index){
+     var d=F.A.drill[id],a=d.timer;
+     phases.push({kind:'prepare',id:id,seconds:index===0?18:18,round:0});
+     for(var i=0;i<a[2];i++){
+       phases.push({kind:'work',id:id,seconds:a[0],round:i+1,complete:i===a[2]-1});
+       if(i<a[2]-1)phases.push({kind:'rest',id:id,seconds:a[1],round:i+1});
+     }
+   });
+   return phases;
+ }
+ function stage(c,id){
+   var d=F.A.drill[id];
+   if(c.staged.indexOf(id)>=0)return;
+   var r=X.stageTraining(F.S.progress,c.bench,id,c.date,d.timer[0]*d.timer[2]);
+   if(r.ok){c.staged.push(id);F.save(F.KP);}else{c.warnings.push(d.name+': '+r.reason);}
+ }
+ function labels(c){
+   var html='';c.ids.forEach(function(id,i){
+     html+='<span class="'+(c.staged.indexOf(id)>=0?'done':c.activeId===id?'now':'')+'">'+(i+1)+'. '+esc(F.A.drill[id].name)+'</span>';
+   });return html;
+ }
+ function show(c){
+   if(current!==c)return;
+   var phase=c.phases[c.position],d=phase?F.A.drill[phase.id]:null;
+   c.activeId=phase?phase.id:null;
+   var step=$('cont-coach');if(!step)return;
+   if(c.status==='finished')return;
+   var title=phase.kind==='prepare'?'Get set: '+d.name:phase.kind==='work'?'Work: '+d.name:'Recover: '+d.name;
+   var text=phase.kind==='prepare'?'Read the instructions while the countdown runs. You do not need to pause.':phase.kind==='rest'?'Breathe and reset. The next round begins automatically.':'Complete this round while staying fully in the camera frame.';
+   var nextRound=phase.kind==='rest'?phase.round+1:Math.max(1,phase.round);
+   var list=(d.seq?[d.steps[(nextRound-1)%d.steps.length]]:d.steps).map(function(z){return '<li>'+esc(z)+'</li>';}).join('');
+   step.innerHTML='<div class="cont-instructions"><span class="cont-tag">DRILL '+(c.ids.indexOf(phase.id)+1)+' OF '+c.ids.length+' · '+esc(F.A.AREAS[d.area])+'</span><h2>'+esc(d.name)+'</h2><p class="small soft">'+esc(d.setup)+'</p><div class="cont-phase"><div><strong>'+esc(title)+'</strong><p class="small" style="opacity:.82">'+esc(text)+'</p></div><b id="cont-seconds">'+fmt(phase.seconds)+'</b></div><div class="cont-progress"><i id="cont-pct"></i></div><div><b>What to do</b><ol>'+list+'</ol></div><p class="small" style="background:#fff8ec;padding:9px 11px;border-radius:10px"><b>Coach tip: </b>'+esc(d.tips[(nextRound-1)%d.tips.length]||d.tips[0]||'Stay balanced and keep moving.')+'</p><div class="cont-stage-list">'+labels(c)+'</div></div>';
+ }
+ function announce(c){
+   var x=c.phases[c.position],d=F.A.drill[x.id];
+   if(x.kind==='prepare')speak('Next drill. '+d.name+'. '+d.setup+'. '+d.steps.slice(0,2).join('. ')+'. Get ready.');
+   else if(x.kind==='work')speak('Go! '+(d.seq?d.steps[(x.round-1)%d.steps.length]:d.steps[0])+'. Round '+x.round+'.');
+   else speak('Rest. Next round is coming up. Get ready.');
+ }
+ function refresh(c){
+   if(current!==c)return;
+   var p=c.phases[c.position],timeLeft=p?Math.max(0,Math.ceil((c.endAt-performance.now())/1000)):0;
+   if($('cont-seconds'))$('cont-seconds').textContent=fmt(timeLeft);
+   if($('cont-pct')&&p)$('cont-pct').style.width=Math.max(0,Math.min(100,(1-timeLeft/p.seconds)*100))+'%';
+   if($('cont-duration'))$('cont-duration').textContent=fmt((performance.now()-c.recordStart)/1000);
+   var count=$('cont-countdown');
+   var preparation=p&&(p.kind==='rest'||p.kind==='prepare');
+   if(count){
+     if(preparation&&timeLeft>0&&timeLeft<=5){
+       count.hidden=false;
+       count.querySelector('strong').textContent=p.kind==='prepare'?'NEXT DRILL IN':'NEXT SET IN';
+       count.querySelector('b').textContent=String(timeLeft);
+     }else count.hidden=true;
+   }
+   if(preparation&&timeLeft<=5&&timeLeft>=1&&c.lastCountKey!==c.position+':'+timeLeft){
+     c.lastCountKey=c.position+':'+timeLeft;
+     if(timeLeft<=3){F.beep(timeLeft===1?930:650,.11);speak(String(timeLeft));}
+   }
+ }
+ function advance(c){
+   if(current!==c||c.status!=='recording')return;
+   var last=c.phases[c.position];
+   if(last&&last.complete)stage(c,last.id);
+   c.position++;
+   if(c.position>=c.phases.length){end(c,false);return;}
+   var next=c.phases[c.position];c.endAt=performance.now()+next.seconds*1000;
+   show(c);announce(c);refresh(c);
+ }
+ function tick(c){
+   if(current!==c||c.status!=='recording')return;
+   if(c.media&&c.media.state==='inactive'){end(c,true);return;}
+   if(performance.now()>=c.endAt)advance(c);
+   else refresh(c);
+ }
+ function support(){
+   return !!(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia&&window.MediaRecorder&&window.isSecureContext);
+ }
+ function recorderFor(stream){
+   var probe=document.createElement('video');
+   var types=['video/mp4;codecs="avc1.42E01E"','video/mp4','video/webm;codecs=vp8','video/webm'];
+   for(var i=0;i<types.length;i++){
+     try{if(MediaRecorder.isTypeSupported(types[i])&&probe.canPlayType(types[i]))return new MediaRecorder(stream,{mimeType:types[i],videoBitsPerSecond:1000000});}catch(e){}
+   }
+   var r=new MediaRecorder(stream,{videoBitsPerSecond:1000000});
+   if(r.mimeType&&!probe.canPlayType(r.mimeType))throw Error('This browser can record video but cannot play the same format for AI analysis. Try Safari on iPad.');
+   return r;
+ }
+ function flipLabel(c){
+   var b=$('cont-flip'),t=$('cont-facing');
+   if(b)b.textContent=c.facing==='environment'?'Switch to front camera':'Switch to rear camera';
+   if(t)t.textContent=c.facing==='environment'?'Rear camera selected':'Front camera selected';
+ }
+ async function getCamera(c){
+   var options={audio:false,video:{facingMode:{ideal:c.facing},width:{ideal:1280},height:{ideal:720},frameRate:{ideal:15,max:24}}};
+   // iPad typically requires the old track to stop before requesting the other camera.
+   if(c.stream){c.stream.getTracks().forEach(function(track){track.stop();});c.stream=null;}
+   var video=$('cont-camera');if(video){video.pause();video.srcObject=null;}
+   var stream=await navigator.mediaDevices.getUserMedia(options);
+   if(current!==c||c.status!=='ready'){stream.getTracks().forEach(function(t){t.stop();});return false;}
+   c.stream=stream;
+   video.srcObject=stream;video.muted=true;video.playsInline=true;
+   await video.play();
+   if($('cont-camplaceholder'))$('cont-camplaceholder').style.display='none';
+   flipLabel(c);
+   return true;
+ }
+ async function flip(c){
+   if(current!==c||c.status!=='ready'||c.cameraBusy)return;
+   if(!support()){F.toast('Camera preview needs Safari on the published HTTPS site.');return;}
+   c.facing=c.facing==='environment'?'user':'environment';flipLabel(c);
+   c.cameraBusy=true;$('cont-flip').disabled=true;$('cont-start').disabled=true;
+   $('cont-status').textContent='Opening '+(c.facing==='user'?'front':'rear')+' camera…';
+   try{await getCamera(c);$('cont-status').textContent='Camera ready. Adjust the iPad until Benjamin and his shoes are visible.';}
+   catch(e){$('cont-status').textContent='Could not switch camera: '+String(e.message||e)+'. Tap Switch again to retry.';}
+   finally{c.cameraBusy=false;if($('cont-flip'))$('cont-flip').disabled=false;if($('cont-start'))$('cont-start').disabled=false;}
+ }
+ async function start(c){
+   if(current!==c||c.status!=='ready'||c.cameraBusy)return;
+   if(!support()){$('cont-status').textContent='Recording requires Safari on the published HTTPS site. You can still use the Camera app and submit that file.';return;}
+   c.cameraBusy=true;$('cont-start').disabled=true;$('cont-flip').disabled=true;
+   $('cont-status').textContent='Starting '+(c.facing==='user'?'front':'rear')+' camera…';
+   try{
+     if(!c.stream){if(!await getCamera(c))return;}
+     if(current!==c)return;
+     c.media=recorderFor(c.stream);c.chunks=[];
+     c.media.ondataavailable=function(e){if(e.data&&e.data.size)c.chunks.push(e.data);};
+     c.media.onerror=function(){if(current===c&&c.status==='recording')end(c,true);};
+     c.media.onstop=function(){finalize(c);};
+     c.media.start(4000);
+     if(c.media.state!=='recording')throw Error('The camera recorder did not start.');
+     c.status='recording';c.recordStart=performance.now();c.endAt=c.recordStart+c.phases[0].seconds*1000;
+     $('cont-start').style.display='none';$('cont-end').style.display='inline-flex';
+     $('cont-camlabel').hidden=false;$('cont-status').textContent='Recording without pauses. Camera switching is available before a session starts.';
+     $('sh-x').textContent='Finish & save';
+     c.closeAction=function(){end(c,true);};$('sh-x').onclick=c.closeAction;
+     show(c);announce(c);refresh(c);
+     c.loop=setInterval(function(){tick(c);},200);
+     try{if(navigator.wakeLock)c.wake=await navigator.wakeLock.request('screen');}catch(e){}
+   }catch(e){
+     c.status='ready';$('cont-start').disabled=false;
+     $('cont-status').textContent='Camera could not start: '+String(e&&e.message||e)+'. Check Safari permission for Camera.';
+     if(c.stream){c.stream.getTracks().forEach(function(t){t.stop();});c.stream=null;}
+   }finally{c.cameraBusy=false;}
+ }
+ function end(c,early){
+   if(current!==c||c.status!=='recording')return;
+   c.status='stopping';clearInterval(c.loop);stopVoice();
+   $('cont-end').disabled=true;
+   $('cont-status').textContent=early?'Stopping early. Saving completed drills only…':'All drills complete. Preparing your video…';
+   if(c.media&&c.media.state!=='inactive'){
+     try{c.media.requestData();}catch(e){}
+     try{c.media.stop();}catch(e){finalize(c);}
+   }else finalize(c);
+   if(c.stream){c.stream.getTracks().forEach(function(t){t.stop();});c.stream=null;}
+   try{if(c.wake)c.wake.release();}catch(e){}
+ }
+ function fileFrom(c){
+   var mime=(c.chunks[0]&&c.chunks[0].type||c.media&&c.media.mimeType||'').toLowerCase();
+   var isMp4=/mp4|quicktime/.test(mime), isWebm=/webm/.test(mime);
+   if(!isMp4&&!isWebm)throw Error('Unknown recorded video type. Use the iPad Camera app to make a new MP4 video.');
+   var outputType=isMp4?'video/mp4':'video/webm';
+   var name='Benjamin-Liverpool-Training-'+c.date.replace(/-/g,'')+'-'+String(c.recordId)+'.'+(isMp4?'mp4':'webm');
+   return new File(c.chunks,name,{type:outputType,lastModified:Date.now()});
+ }
+ function finalize(c){
+   if(current!==c||c.finalized)return;c.finalized=true;clearInterval(c.loop);stopVoice();
+   if(c.stream){c.stream.getTracks().forEach(function(t){t.stop();});c.stream=null;}
+   c.status='finished';$('cont-camlabel').hidden=true;
+   $('sh-x').textContent='Close';$('sh-x').onclick=F.closeSheet;
+   if(!c.chunks||!c.chunks.length){$('cont-status').textContent='Recording failed to produce a video. No XP was awarded. Please use the iPad Camera app and submit that video instead.';return;}
+   try{c.file=fileFrom(c);}catch(e){$('cont-status').textContent=String(e.message||e);return;}
+   F.rememberRecording(c.file,Math.max(0,(performance.now()-c.recordStart)/1000));
+   if(!c.file.size){$('cont-status').textContent='The recording was empty; try again using Camera.';return;}
+   c.url=URL.createObjectURL(c.file);
+   var hasProof=!!X.pendingSummary(F.S.progress);
+   var coach=$('cont-coach');
+   coach.innerHTML='<div class="cont-instructions"><h2>Training recording complete!</h2><p><b>'+c.staged.length+' completed drills</b> are awaiting video verification.</p><p class="small soft">Your recording is '+(c.file.size/1048576).toFixed(1)+' MB. Save it to the iPad first, then submit the same video for training XP. XP is not given just for recording.</p><div class="cont-actions"><button id="cont-save" class="btn red big">Save video to iPad</button><button id="cont-submit" class="btn teal big" disabled>Submit for XP</button></div><p class="cont-warning">On an iPad, tap Save video, then choose <b>Save to Files</b> or <b>Save Video</b> in the share sheet. If the share sheet is unavailable, use the Download fallback. The app cannot silently save to Photos. Keep this page open until you have saved the file.</p><p id="cont-save-status" class="small soft"></p>'+(c.warnings.length?'<p class="small soft">'+esc(c.warnings.join(' · '))+'</p>':'')+'</div>';
+   var camera=$('cont-camera-wrap');
+   if(camera){var preview=camera.querySelector('video');if(preview){preview.srcObject=null;preview.src=c.url;preview.controls=true;preview.muted=false;preview.loop=false;preview.load();}}
+   $('cont-status').textContent='Finished. Save to Files/Photos, then submit for XP. The video is still on this page until you save it.';
+   $('cont-end').style.display='none';$('cont-duration').textContent=fmt((performance.now()-c.recordStart)/1000);
+   $('cont-save').onclick=function(){saveToIpad(c);};
+   $('cont-submit').onclick=function(){if(!c.saveAttempted){F.toast('First save this video to your iPad.');return;}if(!X.pendingSummary(F.S.progress)){F.toast('No completed drills were saved for XP.');return;}var f=c.file;F.closeSheet();F.openTrainingProof(f);};
+ }
+ function download(c){
+   if(!c.url)c.url=URL.createObjectURL(c.file);
+   var a=document.createElement('a');a.href=c.url;a.download=c.file.name;a.style.display='none';document.body.appendChild(a);a.click();a.remove();
+   c.saveAttempted=true;if($('cont-submit')&&X.pendingSummary(F.S.progress))$('cont-submit').disabled=false;
+   $('cont-save-status').textContent='Download requested. Check Safari Downloads / Files and confirm the video is saved before submitting.';
+ }
+ async function saveToIpad(c){
+   if(current!==c||!c.file)return;
+   var st=$('cont-save-status');
+   try{
+     if(navigator.share&&navigator.canShare&&navigator.canShare({files:[c.file]})){
+       await navigator.share({files:[c.file],title:'Benjamin’s Liverpool training session'});
+       c.saveAttempted=true;if($('cont-submit')&&X.pendingSummary(F.S.progress))$('cont-submit').disabled=false;
+       st.textContent='Share sheet closed. Confirm the recording is in Files or Photos before submitting.';
+       return;
+     }
+   }catch(e){if(e&&e.name==='AbortError'){st.textContent='Save cancelled. Use Save video to iPad again when ready.';return;}}
+   download(c);
+ }
+ function closeHook(c){
+   clearInterval(c.loop);stopVoice();
+   if(c.stream)c.stream.getTracks().forEach(function(t){t.stop();});
+   try{if(c.wake)c.wake.release();}catch(e){}
+   if(c.media&&c.media.state==='recording')try{c.media.stop();}catch(e){}
+   if(c.url)URL.revokeObjectURL(c.url);
+   $('sh-x').onclick=F.closeSheet;$('sh-x').textContent='Close';
+   if(current===c)current=null;
+ }
+ function open(){
+   if(current)return;
+   var pending=X.pendingSummary(F.S.progress);
+   if(pending){F.toast('Submit your pending training video before starting a new one.');return;}
+   var ids=planToday();if(!ids.length){F.toast('Today’s planned drills have already earned XP.');return;}
+   var d=F.derived(),c={status:'ready',facing:'environment',cameraBusy:false,lastCountKey:null,ids:ids,phases:phasesFor(ids),position:0,date:F.ymd(),bench:d.cur,staged:[],warnings:[],chunks:[],media:null,stream:null,loop:0,url:null,file:null,finalized:false,recordId:Date.now().toString().slice(-7)};
+   current=c;
+   var first=F.A.drill[ids[0]],mins=c.phases.reduce(function(s,x){return s+x.seconds;},0);
+   var html='<div class="cont-panel"><h2>Continuous training camera</h2><p class="soft small" style="margin-top:4px">One uninterrupted recording; 5-second countdowns between sets/drills and spoken cues. Rotate the iPad to landscape and put it on a stable stand so the full body is visible.</p></div>'+
+    '<div class="cont-shell"><div class="cont-panel" id="cont-camera-wrap"><div class="cont-camera"><video id="cont-camera" autoplay muted playsinline webkit-playsinline></video><div id="cont-camplaceholder" class="cam-placeholder">Camera will appear here once you tap Start. Your iPad may ask for permission.</div><span id="cont-camlabel" class="cont-reclabel" hidden><i></i>REC</span><div class="cont-countdown" id="cont-countdown" role="status" aria-live="off" hidden><strong>NEXT DRILL IN</strong><b>5</b></div><span class="cont-recclock" id="cont-duration">0:00</span></div><div class="cont-camflip"><span id="cont-facing" class="chip">Rear camera selected</span><button class="btn ghost" id="cont-flip" type="button">Switch to front camera</button></div><p class="cont-warning" style="margin-top:9px">Record with the camera facing Benjamin. Use the other pane to follow the instructions. The saved recording contains full-screen camera footage, which is best for on-device grading.</p></div>'+
+    '<div class="cont-panel" id="cont-coach"><div class="cont-instructions"><span class="cont-tag">FIRST DRILL · '+esc(F.A.AREAS[first.area])+'</span><h2>'+esc(first.name)+'</h2><p class="small soft">'+esc(first.setup)+'</p><ol>'+first.steps.map(function(s){return '<li>'+esc(s)+'</li>';}).join('')+'</ol><p class="small soft">Your workout will take about '+fmt(mins)+', including rests and drill instructions. A visible 5-second countdown sounds before every next set or drill.</p></div></div></div>'+
+    '<div class="cont-panel"><div class="cont-actions"><button class="btn red big" id="cont-start">📹 Start camera & session</button><button class="btn ghost big" id="cont-end" style="display:none">Finish & save recording</button></div><p id="cont-status" class="small soft" style="margin-top:9px">No XP is earned until your full recording passes the local session check. Voice cues may require the iPad sound to be on.</p><p class="cont-warning" style="margin-top:7px">Choose front or rear camera before pressing Start to keep one uninterrupted recording. Keep Safari open and the iPad awake throughout recording. Switching apps or locking the screen can interrupt the camera. A short first test is recommended.</p></div>';
+   F.openSheet('Liverpool training • continuous recorder',html,function(){closeHook(c);});
+   // On close, stop and show export panel rather than discarding unsaved footage.
+   $('sh-x').onclick=function(){if(c.status==='recording'){end(c,true);}else if(c.status==='stopping'){F.toast('Finishing the recording…');}else F.closeSheet();};
+   $('cont-start').onclick=function(){start(c);};$('cont-end').onclick=function(){end(c,true);};$('cont-flip').onclick=function(){flip(c);};flipLabel(c);
+ }
+ document.addEventListener('click',function(e){if(e.target.closest('#open-continuous-session'))open();});
+ document.addEventListener('visibilitychange',function(){
+   // iPadOS can stop camera recording in background; never pretend those drills completed.
+   if(document.hidden&&current&&current.status==='recording')end(current,true);
+ });
+ F.openContinuousTraining=open;
+ F.continuousPhases=phasesFor;
+})();
+
+/* parent */
+/* First Team Academy: parent area (password) and start-up */
+(function () {
+  'use strict';
+  var F = window.FTA, A = F.A, $ = F.$, esc = F.esc, S = F.S;
+  var ICONS = ['🎁', '⚽', '🏆', '🍕', '🍦', '🎮', '🎬', '👟', '🧤', '🎟️', '⭐', '💵'];
+  var TRIGS = [['bench', 'Complete every test AND earn 500 benchmark training XP']];
+  var ptab = 'rewards', unlocked = false, reviewFile = null, reviewUrl = null;
+  function releaseReview() { if (reviewUrl) { try { URL.revokeObjectURL(reviewUrl); } catch (e) {} reviewUrl = null; } reviewFile = null; }
+  function saveC() { F.save(F.KC); F.render(); }
+  function unlock() {
+    F.ask({ title: 'Parents only', text: 'Type the parent password.', input: { type: 'password', ph: 'Password' }, buttons: [{ label: 'Unlock', kind: 'red', v: 1 }, { label: 'Cancel', v: 0 }] }).then(function (r) {
+      if (!r.v) return;
+      if (r.text.trim().toUpperCase() === 'CLAUDE') { unlocked = true; ptab = 'review'; panel(); } else F.toast('That is not the password.');
+    });
+  }
+  function opt(v, label, cur) { return '<option value="' + esc(v) + '"' + (String(v) === String(cur) ? ' selected' : '') + '>' + esc(label) + '</option>'; }
+  function panel() {
+    if (!unlocked) return;
+    var h = '<div class="filter">' + [['review', 'Video & XP'], ['rewards', 'Rewards'], ['results', 'Results'], ['settings', 'Settings']].map(function (t) { return '<button data-pt="' + t[0] + '" class="' + (ptab === t[0] ? 'on' : '') + '">' + t[1] + '</button>'; }).join('') + '</div>';
+    h += { review: pReview, rewards: pRewards, results: pResults, settings: pSettings }[ptab]();
+    F.openSheet('Parent area', h, function () { unlocked = false; releaseReview(); }); wire();
+  }
+  function pReview() {
+    var P=S.progress, q=F.XP.pendingSummary(P), cur=F.derived().cur;
+    var h='<div class="card admin-review"><h2>Review training video &amp; award XP</h2>'+
+      '<p class="soft small" style="margin:8px 0">Use this when Benjamin completed a real recorded training session but the automatic AI check could not read it. Select the video, watch it, and approve only the drills you personally verified. No footage is uploaded or retained by this app.</p>'+
+      '<label class="field">Choose the recording<input id="admin-video-file" type="file" accept="video/*,.mov,.mp4,.m4v,.webm" style="height:auto;padding:11px"></label>'+
+      '<div id="admin-video-preview" style="margin-top:9px"><p class="soft small">Choose a video to see a local preview.</p></div>'+
+      (q?'<label class="row" style="margin-top:12px;font-weight:600"><input id="admin-use-pending" type="checkbox" checked style="width:22px;height:22px"> Credit the '+q.count+' unfinished timed drill(s) from '+esc(q.date)+'</label>':'<p class="admin-note">No pending drills found. You can still credit a previously recorded session using its date and number of drills.</p>')+
+      '<div class="grid2" style="margin-top:9px"><label class="field">Training date<input id="admin-video-date" type="date" max="'+F.ymd()+'" value="'+esc(q?q.date:F.ymd())+'"></label>'+
+      '<label class="field">Benchmark<select id="admin-video-bench">'+A.BENCH.map(function(b){return '<option value="'+b.n+'"'+(b.n===(q?q.bench:cur)?' selected':'')+'>Benchmark '+b.n+' · '+esc(b.age)+'</option>';}).join('')+'</select></label></div>'+
+      '<label class="field">Number of completed drills (1–10)<input id="admin-video-count" type="number" inputmode="numeric" min="1" max="10" value="'+(q?q.count:7)+'"></label>'+
+      '<label class="field">Reason for the correction<textarea id="admin-video-reason" rows="3" maxlength="200" placeholder="Example: I reviewed the full video; AI could not decode the file."></textarea></label>'+
+      '<button id="admin-credit-video" class="btn teal big wide" style="margin-top:12px">Review &amp; approve training XP</button>'+
+      '<p class="admin-note">7 distinct drills earn 50 training XP; the daily maximum is 70 XP. This reviewed session counts toward the 500-XP training requirement. The same video and already-credited drills cannot earn points twice. The parent must confirm the award.</p></div>';
+    h+='<div class="card"><h3>General XP correction</h3><p class="soft small" style="margin:6px 0">Give or subtract XP for exceptional circumstances. General XP changes the player total but <b>does not</b> replace verified training XP or benchmark test passes.</p>'+
+      '<label class="field">XP adjustment (for example 25 or -25; maximum ±1,000)<input id="admin-xp-amount" type="number" step="1" min="-1000" max="1000" placeholder="50"></label>'+
+      '<label class="field">Reason<textarea id="admin-xp-reason" rows="2" maxlength="200" placeholder="What is this adjustment for?"></textarea></label>'+
+      '<button class="btn ghost big wide" id="admin-adjust-xp" style="margin-top:12px">Review XP adjustment</button></div>';
+    var a=P.adminAudit||[];
+    h+='<div class="card"><h3>Parent correction history</h3><p class="soft small" style="margin:5px 0 12px">This log is saved with player progress; video files themselves are not saved here.</p>'+
+      (a.length?a.slice(0,30).map(function(x){return '<div class="admin-audit"><div class="row" style="flex-wrap:wrap"><b class="sp">'+(x.type==='video'?'Approved recording':'General XP adjustment')+'</b><span class="chip '+(x.xp>=0?'gold':'')+'">'+(x.xp>0?'+':'')+x.xp+' XP</span></div><p class="admin-meta">'+new Date(x.at).toLocaleString()+(x.type==='video'?' · '+esc(x.date)+' · Benchmark '+x.bench+' · '+x.count+' drills'+(x.fileName?' · '+esc(x.fileName):''):'')+'</p><p class="small">'+esc(x.reason)+'</p></div>';}).join(''):'<p class="soft small">No parent corrections yet.</p>')+'</div>';
+    return h;
+  }
+  function wireReview(){
+    if(!unlocked||ptab!=='review')return;
+    var q=F.XP.pendingSummary(S.progress), ck=$('admin-use-pending');
+    function mode(){var on=!!(q&&ck&&ck.checked);['admin-video-date','admin-video-bench','admin-video-count'].forEach(function(id){$(id).disabled=on;});
+      if(on){$('admin-video-date').value=q.date;$('admin-video-bench').value=q.bench;$('admin-video-count').value=q.count;}}
+    if(ck)ck.onchange=mode;mode();
+    $('admin-video-file').onchange=function(){
+      releaseReview();var f=this.files&&this.files[0],box=$('admin-video-preview');
+      if(!f){box.innerHTML='<p class="soft small">No video selected.</p>';return;}
+      if(!F.isTrainingVideo(f)){box.innerHTML='<p class="soft small">Choose a video file (MP4, MOV, or WebM).</p>';return;}
+      if(f.size>2.5*1024*1024*1024){box.innerHTML='<p class="soft small">The video is too large. Save a smaller copy to Files first.</p>';return;}
+      reviewFile=f;reviewUrl=URL.createObjectURL(f);
+      box.innerHTML='<div class="vbox"><video id="admin-review-player" controls playsinline webkit-playsinline preload="metadata"></video></div>'+
+        '<p class="admin-meta" style="margin-top:5px">'+esc(f.name)+' · '+(f.size/1048576).toFixed(1)+' MB. This is a local preview only.</p>'+
+        '<p class="soft small">If the iPad cannot play this format, open the saved recording in Photos/Files to review it first. You may still approve it using the file and a written reason.</p>';
+      $('admin-review-player').src=reviewUrl;
+    };
+    $('admin-credit-video').onclick=async function(){
+      if(!unlocked||!reviewFile){F.toast('Choose the session recording first.');return;}
+      var date=$('admin-video-date').value,bench=Number($('admin-video-bench').value),count=Number($('admin-video-count').value),
+        reason=$('admin-video-reason').value.trim(),usePending=!!(q&&ck&&ck.checked),f=reviewFile;
+      if(!date||date>F.ymd()){F.toast('Choose a valid past or current training date.');return;}
+      if(reason.length<8){F.toast('Write a short reason (at least 8 characters).');return;}
+      var btn=this;btn.disabled=true;btn.textContent='Checking for duplicate videos…';
+      try{
+        var hash=await F.fingerprintTrainingVideo(f);
+        if(!unlocked||reviewFile!==f)return;
+        var req={hash:hash,date:date,bench:bench,count:count,usePending:usePending,reason:reason,
+          fileName:f.name,duration:$('admin-review-player')&&Number.isFinite($('admin-review-player').duration)?$('admin-review-player').duration:0};
+        var preview=F.XP.parentReviewPreview(S.progress,req);
+        if(!preview.ok){F.toast(preview.reason);return;}
+        var conf=await F.ask({title:'Approve recorded training?',text:'Approve '+preview.count+' drill(s) for '+date+' in Benchmark '+bench+' and award +'+preview.xp+' training XP? This is a parent decision and will be recorded in history.',
+          buttons:[{label:'Approve +'+preview.xp+' training XP',kind:'teal',v:1},{label:'Cancel',kind:'ghost',v:0}]});
+        if(!conf.v||!unlocked)return;
+        var snap=F.snapshot(),r=F.XP.parentReviewVideo(S.progress,req);
+        if(!r.ok){F.toast(r.reason);return;}
+        var bonus=F.XP.awardBenchmarkBonuses(S.progress,F.A.TESTS);
+        F.settle(snap,false);
+        releaseReview();panel();
+        F.toast('Parent approved +'+r.xp+' training XP'+(bonus.xp?' +5,000 benchmark XP!':'')+'.');
+      }catch(e){F.toast('Video review could not finish: '+String(e.message||e).slice(0,110));}
+      finally{if(btn&&btn.isConnected){btn.disabled=false;btn.textContent='Review & approve training XP';}}
+    };
+    $('admin-adjust-xp').onclick=async function(){
+      if(!unlocked)return;
+      var n=Number($('admin-xp-amount').value),reason=$('admin-xp-reason').value.trim();
+      if(!Number.isInteger(n)||n===0||Math.abs(n)>1000||reason.length<8){F.toast('Use ±1–1,000 XP with a reason of at least 8 characters.');return;}
+      if(S.progress.xp+n<0){F.toast('Cannot subtract more XP than Benjamin has.');return;}
+      var c=await F.ask({title:'Confirm XP adjustment?',text:'Apply '+(n>0?'+':'')+n+' GENERAL XP? This does not change his 500 training XP requirement or benchmark test scores.',
+        buttons:[{label:'Confirm adjustment',kind:'red',v:1},{label:'Cancel',kind:'ghost',v:0}]});
+      if(!c.v||!unlocked)return;
+      var snap=F.snapshot(),r=F.XP.parentAdjustGeneralXP(S.progress,n,reason);
+      if(!r.ok){F.toast(r.reason);return;}
+      F.settle(snap,true);panel();F.toast('Parent adjustment: '+(n>0?'+':'')+n+' XP.');
+    };
+  }
+  function pRewards() {
+    var d = F.derived(), h = '<p class="soft small">Rewards unlock only after all 10 camera challenges pass at 90/100 or above AND 500 training XP are earned in that benchmark. Passing a test pays +100 XP once; each benchmark pays a separate automatic +5,000 XP one time. Changes to physical rewards save as you type.</p>';
+    S.config.rewards.forEach(function (r, i) {
+      var st = r.given ? 'Given on ' + new Date(r.given).toLocaleDateString() : F.isReady(r, d) ? 'Unlocked and waiting for you' : 'Locked';
+      h += '<div class="card" data-rw="' + i + '"><div style="display:grid;grid-template-columns:84px 1fr 1fr;gap:10px"><label class="field">Icon<select data-f="icon">' + ICONS.map(function (x) { return opt(x, x, r.icon); }).join('') + '</select></label>' +
+        '<label class="field">Reward<input data-f="title" maxlength="50" value="' + esc(r.title) + '"></label><label class="field">Note for ' + esc(S.config.name) + '<input data-f="note" maxlength="80" value="' + esc(r.note) + '"></label></div>' +
+        '<div style="display:grid;grid-template-columns:1fr 110px;gap:10px;margin-top:10px"><label class="field">Unlocks when<select data-f="trig">' + TRIGS.map(function (t) { return opt(t[0], t[1], r.trig); }).join('') + '</select></label><label class="field">Number<input data-f="n" type="number" min="1" inputmode="numeric" value="' + r.n + '"></label></div>' +
+        '<div class="row" style="margin-top:12px;flex-wrap:wrap"><span class="chip ' + (r.given ? 'pass' : F.isReady(r, d) ? 'gold' : '') + '">' + st + '</span><span class="sp"></span><button class="btn ' + (r.given ? 'ghost' : 'gold') + '" data-give="' + i + '"' + (!r.given && !F.isReady(r, d) ? ' disabled title="Not earned yet"' : '') + '>' + (r.given ? 'Undo given' : 'Mark as given') + '</button><button class="btn ghost" data-del="' + i + '">Delete</button></div></div>';
+    });
+    return h + '<button class="btn red big" id="rw-add">Add a reward</button>';
+  }
+  function pResults() {
+    var P = S.progress;
+    var h = '<div class="card"><h3>Training + benchmark certification</h3><p>Earn training XP only after completing the drill timers AND submitting an independently verified session video: seven distinct drills earn 50 XP, capped at 70 XP/day. Each benchmark requires 500 training XP and all 10 camera challenges at 90/100 or better. Each new test pass pays +100 XP; completing both requirements pays +5,000 XP once.</p><p class="soft small" style="margin-top:6px">Parents can approve an existing recording or correct general XP under Video & XP. Only approved session video awards count as training XP. Test scores and 90/100 certification cannot be overridden here. Older successful benchmarks are preserved when updating.</p></div>';
+    h += '<div class="card"><h3>Verified session videos</h3><p class="soft small">Video is analyzed on-device and not stored here. Only submission metadata is kept.</p>'+((P.trainingSessions||[]).filter(function(q){return q.verified;}).slice(0,20).map(function(q){return '<div class="row" style="margin-top:8px;flex-wrap:wrap"><b class="sp">'+esc(q.date)+' · Benchmark '+q.bench+'</b><span class="chip pass">'+q.ids.length+' drills · +'+q.xp+' XP</span><span class="chip">'+(q.method==='parent-video-review'?'Parent approved':Math.round(q.duration/60)+' min video')+'</span></div>';}).join('')||'<p class="soft" style="margin-top:8px">No verified session videos yet.</p>')+'</div>';
+    h += '<div class="card"><h3>Training XP by benchmark</h3>' + A.BENCH.map(function(b){return '<div class="row"><b class="sp">Benchmark '+b.n+'</b><span class="chip">'+F.XP.trainingFor(P,b.n)+' / '+F.XP.TRAINING_REQUIRED+' XP</span><span class="chip '+(P.bonusAwards[b.n]?'pass':'')+'">'+(P.bonusAwards[b.n]?'Bonus recorded':'Bonus not yet earned')+'</span></div>';}).join('') + '</div>';
+    h += '<div class="card"><h3>Test log</h3>' + (P.log.length ? '' : '<p class="soft">No tests yet.</p>') + '<div style="display:flex;flex-direction:column;gap:6px;margin-top:8px">' + P.log.slice(0, 50).map(function (e, i) {
+      var t = A.test[e.test];
+      return '<div class="row" style="border-bottom:1.5px solid var(--line);padding-bottom:6px;flex-wrap:wrap"><span class="soft small" style="min-width:150px">' + new Date(e.t).toLocaleString([], { dateStyle: 'short', timeStyle: 'short' }) + '</span><span class="sp" style="font-weight:600">' + esc(t.name) + ' <span class="soft small">at level ' + e.at + '</span></span><span class="num" style="font-size:20px">' + F.fmt(t, e.score) + '</span>' +
+        (e.to > e.from ? '<span class="chip pass">Certified to ' + e.to + '</span>' : '<span class="chip">No certification</span>') + '<span class="chip">' + (e.grade == null ? 'Legacy result' : 'Grade ' + e.grade + '/100') + '</span><button class="btn ghost" style="min-height:38px" data-rm="' + i + '">Remove</button></div>';
+    }).join('') + '</div></div>';
+    return h;
+  }
+  function pTargets() {
+    var h = '<p class="soft small">These are the numbers each level asks for. They are my starting estimates, not official ODP or ECNL standards, so change any that feel wrong for your club. Cone Weave is in seconds, where lower is better.</p><div class="card scrollx"><table class="tg"><tr><th>Test</th>';
+    for (var i = 1; i <= 10; i++) h += '<th>' + i + '</th>';
+    h += '</tr>' + A.TESTS.map(function (t) { var r = '<tr><td>' + esc(t.name) + '</td>'; for (var l = 1; l <= 10; l++) r += '<td><input type="number" step="0.1" inputmode="decimal" data-tg="' + t.id + '" data-l="' + l + '" value="' + F.target(t.id, l) + '"></td>'; return r + '</tr>'; }).join('') + '</table></div><button class="btn ghost" id="tg-reset">Put all targets back to the starting numbers</button>';
+    return h;
+  }
+  function pSettings() {
+    var c = F.cloud();
+    return '<div class="card"><label class="field">Player name<input id="s-name" maxlength="20" value="' + esc(S.config.name) + '"></label><label class="row" style="margin-top:12px;font-weight:600"><input type="checkbox" id="s-sound"' + (S.config.sound ? ' checked' : '') + ' style="width:24px;height:24px"> Timer beeps and sounds</label></div>' +
+      '<div class="card"><h3>Where progress is kept</h3><p>' + (c === 'cloud' ? 'Saved with this page in your Claude account, so it follows you to other devices.' : c === 'error' ? 'The last save to your Claude account did not go through. A copy is on this device and it will try again.' : 'Saved on this device only right now.') + '</p><p class="soft small" style="margin-top:6px">Video analysis runs in Safari on this iPad. No Gemini key, Worker, subscription or video upload. MediaPipe downloads its free model on first use; Google may collect SDK usage metrics. Results are saved only in this browser unless Claude storage is being used.</p></div>' +
+      '<div class="card"><h3>Start over</h3><p class="soft small">Wipes XP, levels, the test log and training days. Rewards and targets stay.</p><button class="btn ghost" id="s-reset" style="margin-top:8px">Reset all progress</button></div>';
+  }
+  function wire() {
+    Array.prototype.forEach.call(document.querySelectorAll('[data-pt]'), function (b) { b.onclick = function () { if(!unlocked)return; releaseReview(); ptab = b.dataset.pt; panel(); }; });
+    if(ptab==='review') wireReview();
+    Array.prototype.forEach.call(document.querySelectorAll('[data-rw] [data-f]'), function (inp) {
+      inp.onchange = function () { var r = S.config.rewards[+inp.closest('[data-rw]').dataset.rw], f = inp.dataset.f; r[f] = f === 'n' ? Math.max(1, Math.min(10, Math.round(+inp.value) || 1)) : f === 'trig' ? 'bench' : inp.value; saveC(); if (f === 'trig' || f === 'n') panel(); };
+    });
+    Array.prototype.forEach.call(document.querySelectorAll('[data-give]'), function (b) { b.onclick = function () { var r = S.config.rewards[+b.dataset.give]; if (!r.given && !F.isReady(r, F.derived())) return; r.given = r.given ? 0 : Date.now(); saveC(); panel(); }; });
+    Array.prototype.forEach.call(document.querySelectorAll('[data-del]'), function (b) {
+      b.onclick = function () { F.ask({ title: 'Delete this reward?', buttons: [{ label: 'Delete it', kind: 'red', v: 1 }, { label: 'Keep it', v: 0 }] }).then(function (r) { if (r.v) { S.config.rewards.splice(+b.dataset.del, 1); saveC(); panel(); } }); };
+    });
+    if ($('rw-add')) $('rw-add').onclick = function () { S.config.rewards.push({ id: 'r' + Date.now().toString(36), icon: ICONS[0], title: 'New reward', note: '', trig: 'bench', n: Math.min(10, F.derived().cur), given: 0 }); saveC(); panel(); var b = $('sheet').querySelector('.body'); b.scrollTop = b.scrollHeight; };
+    Array.prototype.forEach.call(document.querySelectorAll('[data-rm]'), function (b) {
+      b.onclick = function () {
+        var P = S.progress, e = P.log[+b.dataset.rm], snap = F.snapshot(); if (!e) return;
+        if (e.to > e.from) { var ts = P.tests[e.test]; ts.lvl = Math.min(ts.lvl, e.from); P.xp = Math.max(0, P.xp - (e.xpEarned === undefined ? (e.to - e.from) * 60 : e.xpEarned)); }
+        P.log.splice(+b.dataset.rm, 1); F.settle(snap, true); panel();
+      };
+    });
+    Array.prototype.forEach.call(document.querySelectorAll('[data-tg]'), function (inp) {
+      inp.onchange = function () { var id = inp.dataset.tg, arr = S.config.targets[id] || A.test[id].targets.slice(), v = parseFloat(inp.value); if (!isFinite(v) || v <= 0) { inp.value = F.target(id, +inp.dataset.l); return; } arr[+inp.dataset.l - 1] = v; S.config.targets[id] = arr; saveC(); };
+    });
+    if ($('tg-reset')) $('tg-reset').onclick = function () { S.config.targets = {}; saveC(); panel(); };
+    if ($('s-name')) $('s-name').onchange = function () { S.config.name = this.value.trim() || 'Player'; saveC(); };
+    if ($('s-sound')) $('s-sound').onchange = function () { S.config.sound = this.checked; saveC(); };
+    if ($('s-reset')) $('s-reset').onclick = function () {
+      F.ask({ title: 'Reset all progress?', text: 'Type RESET to confirm. This cannot be undone.', input: { ph: 'RESET' }, buttons: [{ label: 'Reset', kind: 'red', v: 1 }, { label: 'Cancel', v: 0 }] }).then(function (r) {
+        if (r.v && r.text.trim().toUpperCase() === 'RESET') { S.progress = F.fixProgress(null); F.save(F.KP); F.render(); F.toast('Progress reset.'); panel(); }
+      });
+    };
+  }
+  $('b-parent').onclick = unlock;
+
+  /* ---------- start ---------- */
+  F.render();
+  F.ready.then(function () { return F.pull(); }).then(function (changed) { if (changed) F.render(); });
+  document.addEventListener('visibilitychange', function () { if (!document.hidden && !$('sheet').classList.contains('on')) F.pull().then(function (ch) { if (ch) F.render(); }); });
+})();
+
+</script>
+</body>
+</html>
